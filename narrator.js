@@ -28,16 +28,18 @@ const renderStory = async (template, file, name, as, destructure) => {
   return await prom;
 };
 
-function recursivelyWalkTree(jsonObj) {
+function recursivelyWalkASTTree(jsonObj) {
   if (jsonObj !== null && typeof jsonObj == "object") {
-    Object.entries(jsonObj).forEach(([key, value]) => {
+    Object.entries(jsonObj).forEach(([key, node]) => {
       // key is either an array index or object key
-      if (value !== null) {
-        if (value.key) {
-          if (value.key.name === "propTypes") console.log(value);
+      if (node !== null) {
+        if (node.key) {
+          if (node.key.name === "propTypes") {
+            console.log(node.value);
+          }
         }
       }
-      recursivelyWalkTree(value);
+      recursivelyWalkASTTree(node);
     });
   } else {
     // jsonObj is a number or string
@@ -81,7 +83,7 @@ glob("../Lexograph/client/{,!(static)/**/}/diagrams_list_item.js", {}, function(
 
       // console.log(c);
 
-      recursivelyWalkTree(varDecs);
+      recursivelyWalkASTTree(varDecs);
 
       // varDecs.map(v => {
       //   if (v.declarations[0].init.type === "ClassExpression") {
