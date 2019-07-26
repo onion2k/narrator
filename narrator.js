@@ -37,24 +37,6 @@ const storify = function(file, contents) {
     storyToComponentPath.length - path.extname(storyToComponentPath).length
   );
 
-  console.log(varDecs);
-  console.log(classDecs);
-  console.log(exportDecs);
-
-  //b.program.body
-
-  //classDecs
-
-  // console.log(b.program.body);
-
-  // helpers.getPropTypes(b).then(props => {
-  //   console.log(props.value);
-  // });
-
-  // process.exit();
-
-  // helpers.unwrap(b.program.body);
-
   let renderProps;
   let ptProm;
 
