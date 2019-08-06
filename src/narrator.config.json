@@ -1,4 +1,4 @@
 {
-  "src": "../Lexograph/client/{,!(static)/**/}/builder_flowline.js",
+  "src": "../Lexograph/client/{,!(static)/**/}/*.js",
   "storyDir": "./stories"
 }

@@ -10,7 +10,11 @@ const helpers = require("./lib/helpers");
 const render = require("./lib/render");
 const { writeTest } = require("./lib/writeFile");
 
-const narrate = function(file, contents) {
+const getPt = async function(dec) {
+  return await helpers.getPropTypes(dec);
+};
+
+const narrate = async function(file, contents) {
   const b = babelParser.parse(contents, {
     sourceType: "module",
     plugins: ["jsx", "dynamicImport", "classProperties"]
@@ -41,6 +45,10 @@ const narrate = function(file, contents) {
   let renderProps;
   let ptProm;
 
+  /**
+   *
+   * Assuming that the class is being exported later in the file as the default. This is wrong...
+   */
   if (classDecs.length === 1) {
     if (classDecs[0].superClass) {
       if (
@@ -48,25 +56,25 @@ const narrate = function(file, contents) {
         classDecs[0].superClass.object.name === "React"
       ) {
         const name = changeCase.camel(classDecs[0].id.name);
-        const pt = helpers.getPropTypes(classDecs);
-        pt.then(props => {
-          console.log("Props: ", props);
-          renderProps = {
-            path: storyToComponentPath,
-            name: `${name}`,
-            as: `{ ${name} }`,
-            props: props
-          };
-        });
+        const pt = await getPt(classDecs);
+        renderProps = {
+          path: storyToComponentPath,
+          name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+          as: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+          props: pt
+        };
+        ptProm = Promise.resolve(renderProps);
       }
     }
   } else if (exportDecs.length === 1) {
     if (exportDecs[0].type === "ExportNamedDeclaration") {
       const name = changeCase.camel(exportDecs[0].declaration.name);
+      const pt = helpers.getPropTypes(classDecs);
       renderProps = {
         path: storyToComponentPath,
-        name: `${name}`,
-        as: `${name}`
+        name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+        as: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+        props: pt
       };
     } else {
       const name = changeCase.pascal(path.basename(file, ".js"));
@@ -78,12 +86,13 @@ const narrate = function(file, contents) {
     }
     ptProm = Promise.resolve(renderProps);
   } else if (varDecs.length > 0) {
-    ptProm = helpers.getPropTypes(varDecs);
+    // ptProm = helpers.getPropTypes(varDecs);
   }
 
   if (ptProm) {
     ptProm
       .then(props => {
+        console.log(props);
         render(
           "./src/templates/test_default.ejs",
           renderProps.path,

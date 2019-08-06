@@ -22,11 +22,13 @@ test('<%= as; %> renders correctly', async () => {
    * Components that use <Link /> need to be contained in a router. <MemoryRouter> is lightweight and doesn't require any config.
    */
 
-  const props = {<%= props; %>}
+  const props = {
+<%- props; %>
+  }
 
   const { getByText } = renderWithRedux(
     <MemoryRouter>
-      <<%= as; %> {...props} />
+      <<%= component %> {...props} />
     </MemoryRouter>,
   )
   expect(getByText('Forgot Password')).toBeVisible()

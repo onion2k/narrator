@@ -20,7 +20,7 @@ const findPropTypeDefaults = function(jsonObj, resolve, reject) {
   return searchJson(jsonObj, "defaultProps", resolve, reject);
 };
 
-const getPropTypes = function(jsonObj) {
+const getPropTypes = async function(jsonObj) {
   const propTypes = new Promise(function(resolve, reject) {
     findPropTypes(jsonObj, resolve, reject);
   });
@@ -29,15 +29,13 @@ const getPropTypes = function(jsonObj) {
     findPropTypeDefaults(jsonObj, resolve, reject);
   });
 
-  return Promise.all([propTypes, defaultProps])
+  const ptProm = await Promise.all([propTypes, defaultProps])
     .then(values => {
       const [propTypes, defaultProps] = values;
-      // console.log(propTypes, defaultProps);
 
       const pt = {};
       const defs = {};
       defaultProps.value.properties.forEach(ptv => {
-        // console.log("pt:", ptv.key.name, "--", ptv.value.value);
         defs[ptv.key.name] = ptv.value;
       });
 
@@ -67,7 +65,7 @@ const getPropTypes = function(jsonObj) {
       if (err) console.log("Oopers", err);
     });
 
-  return propTypes;
+  return ptProm;
 };
 
 const unwrap = function(obj) {
