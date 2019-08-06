@@ -28,7 +28,9 @@ test('<%= as; %> renders correctly', async () => {
 
   const { getByText } = renderWithRedux(
     <MemoryRouter>
-      <<%= component %> {...props} />
+      <svg>
+        <<%= component %> {...props} />
+      </svg>
     </MemoryRouter>,
   )
   expect(getByText('Forgot Password')).toBeVisible()

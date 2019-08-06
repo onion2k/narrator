@@ -3,30 +3,32 @@ const ejs = require("ejs");
 const propsToString = function(props) {
   return Object.entries(props).reduce((str, y) => {
     if (y[1].required === false) {
-      str += "// ";
+      str += "\t\t// ";
+    } else {
+      str += "\t\t";
     }
     switch (y[1].type) {
       case "string":
-        return (str += `\t\t${y[0]}: ${
+        return (str += `${y[0]}: ${
           y[1].value === false ? false : "'" + y[1].value + "'"
-        }, //${y[1].type} ${y[1].required ? " required" : ""}\n`);
+        }, //${y[1].type} ${y[1].required ? "required" : ""}\n`);
       case "func":
-        return (str += `\t\t${y[0]}: ${
+        return (str += `${y[0]}: ${
           y[1].value === null ? "()=>{}" : "'" + y[1].value + "'"
-        }, //${y[1].type} ${y[1].required ? " required" : ""}\n`);
+        }, //${y[1].type} ${y[1].required ? "required" : ""}\n`);
       case "object":
-        return (str += `\t\t${y[0]}: ${
+        return (str += `${y[0]}: ${
           y[1].value === null || y[1].value === "undefined"
             ? "{}"
             : "'" + y[1].value + "'"
-        }, //${y[1].type} ${y[1].required ? " required" : ""}\n`);
+        }, //${y[1].type} ${y[1].required ? "required" : ""}\n`);
       case "array":
-        return (str += `\t\t${y[0]}: ${
+        return (str += `${y[0]}: ${
           y[1].value === null ? "[]" : "'" + y[1].value + "'"
-        }, //${y[1].type} ${y[1].required ? " required" : ""}\n`);
+        }, //${y[1].type} ${y[1].required ? "required" : ""}\n`);
       default:
-        return (str += `\t\t${y[0]}: ${y[1].value}, //${y[1].type} ${
-          y[1].required ? " required" : ""
+        return (str += `${y[0]}: ${y[1].value}, //${y[1].type} ${
+          y[1].required ? "required" : ""
         }\n`);
     }
   }, "");
