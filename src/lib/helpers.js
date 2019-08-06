@@ -29,11 +29,12 @@ const getPropTypes = function(jsonObj) {
     findPropTypeDefaults(jsonObj, resolve, reject);
   });
 
-  Promise.all([propTypes, defaultProps])
+  return Promise.all([propTypes, defaultProps])
     .then(values => {
       const [propTypes, defaultProps] = values;
       // console.log(propTypes, defaultProps);
 
+      const pt = {};
       const defs = {};
       defaultProps.value.properties.forEach(ptv => {
         // console.log("pt:", ptv.key.name, "--", ptv.value.value);
@@ -42,24 +43,28 @@ const getPropTypes = function(jsonObj) {
 
       propTypes.value.properties.forEach(ptv => {
         let f;
+        let req = false;
 
         if (!ptv.value.property) {
           f = ptv.value.callee.property.name;
         } else if (ptv.value.object && ptv.value.object.property) {
-          f = ptv.value.object.property.name + " REQ";
+          f = ptv.value.object.property.name;
+          req = true;
         } else {
           f = ptv.value.property.name;
         }
 
-        console.log(
-          ptv.key.name,
-          f,
-          !!defs[ptv.key.name] ? "'" + defs[ptv.key.name].value + "'" : "''"
-        );
+        pt[ptv.key.name] = {
+          type: f,
+          required: req,
+          value: !!defs[ptv.key.name] ? defs[ptv.key.name].value : null
+        };
       });
+
+      return pt;
     })
     .catch(err => {
-      if (err) console.log("Oopers");
+      if (err) console.log("Oopers", err);
     });
 
   return propTypes;

@@ -8,9 +8,9 @@ const changeCase = require("change-case");
 const babelParser = require("@babel/parser");
 const helpers = require("./lib/helpers");
 const render = require("./lib/render");
-const { writeTest } = require("./lib/writeStory");
+const { writeTest } = require("./lib/writeFile");
 
-const storify = function(file, contents) {
+const narrate = function(file, contents) {
   const b = babelParser.parse(contents, {
     sourceType: "module",
     plugins: ["jsx", "dynamicImport", "classProperties"]
@@ -32,6 +32,7 @@ const storify = function(file, contents) {
   });
 
   let storyToComponentPath = path.relative(config.storyDir, file);
+
   storyToComponentPath = storyToComponentPath.substr(
     0,
     storyToComponentPath.length - path.extname(storyToComponentPath).length
@@ -39,12 +40,6 @@ const storify = function(file, contents) {
 
   let renderProps;
   let ptProm;
-
-  if (varDecs.length > 0) {
-    ptProm = helpers.getPropTypes(varDecs);
-  } else {
-    ptProm = Promise.resolve();
-  }
 
   if (classDecs.length === 1) {
     if (classDecs[0].superClass) {
@@ -54,11 +49,15 @@ const storify = function(file, contents) {
       ) {
         const name = changeCase.camel(classDecs[0].id.name);
         const pt = helpers.getPropTypes(classDecs);
-        renderProps = {
-          path: storyToComponentPath,
-          name: `${name}`,
-          as: `{ ${name} }`
-        };
+        pt.then(props => {
+          console.log("Props: ", props);
+          renderProps = {
+            path: storyToComponentPath,
+            name: `${name}`,
+            as: `{ ${name} }`,
+            props: props
+          };
+        });
       }
     }
   } else if (exportDecs.length === 1) {
@@ -74,26 +73,36 @@ const storify = function(file, contents) {
       renderProps = {
         path: storyToComponentPath,
         name: `${name}`,
-        as: `Component${name}`
+        as: `${name}`
       };
     }
+    ptProm = Promise.resolve(renderProps);
+  } else if (varDecs.length > 0) {
+    ptProm = helpers.getPropTypes(varDecs);
+  }
+
+  if (ptProm) {
+    ptProm
+      .then(props => {
+        render(
+          "./src/templates/test_default.ejs",
+          renderProps.path,
+          renderProps.name,
+          renderProps.as,
+          renderProps.props
+        )
+          .then(f => {
+            return writeTest(config.storyDir, file, renderProps.name, f);
+          })
+          .catch(error => {
+            console.log("Error: ", error);
+          });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 };
-
-// ptProm.then(props => {
-//   render(
-//     "./templates/test_default.ejs",
-//     renderProps.path,
-//     renderProps.name,
-//     renderProps.as
-//   )
-//     .then(story => {
-//       return writeTest(config.storyDir, file, renderProps.name, story);
-//     })
-//     .catch(err => {
-//       console.log(err);
-//     });
-// });
 
 // ../Lexograph/client/{,!(static)/**/}/*.js
 glob(config.src, {}, function(err, files) {
@@ -103,7 +112,11 @@ glob(config.src, {}, function(err, files) {
 
   files.map(file => {
     fs.readFile(file, "utf8", function(err, contents) {
-      storify(file, contents);
+      narrate(file, contents);
     });
   });
 });
+
+/**
+ * Test 1
+ */
