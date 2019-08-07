@@ -1,4 +1,4 @@
 {
-  "src": "../Lexograph/client/{,!(static)/**/}/*.js",
+  "src": "../Lexograph/client/{,!(static)/**/}/AuthMessage.js",
   "storyDir": "./stories"
 }

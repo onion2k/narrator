@@ -36,7 +36,6 @@ const propsToString = function(props) {
 
 const render = async (template, file, name, as, props) => {
   const prom = new Promise((resolve, reject) => {
-    console.log(propsToString(props));
     ejs.renderFile(
       template,
       {

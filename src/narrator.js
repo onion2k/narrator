@@ -15,97 +15,122 @@ const getPt = async function(dec) {
 };
 
 const narrate = async function(file, contents) {
+  let pt;
+  /**
+   * Parse the incoming file to get the AST
+   */
   const b = babelParser.parse(contents, {
     sourceType: "module",
     plugins: ["jsx", "dynamicImport", "classProperties"]
   });
 
+  /**
+   * Find the root level variable declarations
+   */
+  const expressionDecs = b.program.body.filter(node => {
+    return node.type === "ExpressionStatement";
+  });
+
+  /**
+   * these are the propTypes and defaultProps
+   */
+  if (expressionDecs) {
+    pt = helpers.parsePropTypes(
+      expressionDecs[0].expression.right,
+      expressionDecs[1].expression.right
+    );
+  }
+
+  /**
+   * Find the root level variable declarations
+   */
   const varDecs = b.program.body.filter(node => {
     return node.type === "VariableDeclaration";
   });
+  console.log(varDecs[0].declarations[0].id.name); // name
+  // console.log(varDecs[0].declarations[0].init.body.body[0].type); // ReturnStatement
+  // console.log(varDecs[0].declarations[0].init.body.body[0].argument.type); // JSXElement
 
+  /**
+   * Find the root level class declarations
+   */
   const classDecs = b.program.body.filter(node => {
     return node.type === "ClassDeclaration";
   });
 
+  /**
+   * Find the exports
+   */
   const exportDecs = b.program.body.filter(node => {
     return (
       node.type === "ExportDefaultDeclaration" ||
       node.type === "ExportNamedDeclaration"
     );
   });
+  console.log(exportDecs[0].declaration.name);
 
-  let storyToComponentPath = path.relative(config.storyDir, file);
+  /**
+   * Define some things that we'll need to write the file
+   */
 
-  storyToComponentPath = storyToComponentPath.substr(
+  /**
+   * Find the path from the component to whereever we're saving the tests
+   */
+  const relativeComponentPath = path.relative(config.storyDir, file);
+
+  /**
+   * Imports in tests don't use the extension, so strip it off.
+   */
+  const relativeComponentPathWithoutExtension = relativeComponentPath.substr(
     0,
-    storyToComponentPath.length - path.extname(storyToComponentPath).length
+    relativeComponentPath.length - path.extname(relativeComponentPath).length
   );
 
   let renderProps;
-  let ptProm;
+  let ptProm = new Promise((resolve, reject) => {
+    if (exportDecs.length > 0) {
+      exportDecs.forEach(exp => {
+        const name =
+          exp.type === "ExportNamedDeclaration"
+            ? changeCase.camel(exp.declaration.name)
+            : changeCase.pascal(path.basename(file, ".js"));
+        pt = getPt(classDecs);
+        pt.then(data => {
+          renderProps = {
+            path: relativeComponentPathWithoutExtension,
+            name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+            as: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
+            props: data
+          };
+          resolve(renderProps);
+        });
+      });
+    }
+  });
 
   /**
    *
-   * Assuming that the class is being exported later in the file as the default. This is wrong...
    */
-  if (classDecs.length === 1) {
-    if (classDecs[0].superClass) {
-      if (
-        classDecs[0].superClass.object &&
-        classDecs[0].superClass.object.name === "React"
-      ) {
-        const name = changeCase.camel(classDecs[0].id.name);
-        const pt = await getPt(classDecs);
-        renderProps = {
-          path: storyToComponentPath,
-          name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
-          as: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
-          props: pt
-        };
-        ptProm = Promise.resolve(renderProps);
-      }
-    }
-  } else if (exportDecs.length === 1) {
-    if (exportDecs[0].type === "ExportNamedDeclaration") {
-      const name = changeCase.camel(exportDecs[0].declaration.name);
-      const pt = helpers.getPropTypes(classDecs);
-      renderProps = {
-        path: storyToComponentPath,
-        name: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
-        as: `${name.charAt(0).toUpperCase() + name.slice(1)}`,
-        props: pt
-      };
-    } else {
-      const name = changeCase.pascal(path.basename(file, ".js"));
-      renderProps = {
-        path: storyToComponentPath,
-        name: `${name}`,
-        as: `${name}`
-      };
-    }
-    ptProm = Promise.resolve(renderProps);
-  } else if (varDecs.length > 0) {
-    // ptProm = helpers.getPropTypes(varDecs);
-  }
 
   if (ptProm) {
     ptProm
       .then(props => {
         console.log(props);
-        render(
-          "./src/templates/test_default.ejs",
-          renderProps.path,
-          renderProps.name,
-          renderProps.as,
-          renderProps.props
-        )
-          .then(f => {
-            return writeTest(config.storyDir, file, renderProps.name, f);
-          })
-          .catch(error => {
-            console.log("Error: ", error);
-          });
+        if (props) {
+          render(
+            "./src/templates/test_default.ejs",
+            props.path,
+            props.name,
+            props.as,
+            props.props
+          )
+            .then(f => {
+              return writeTest(config.storyDir, file, renderProps.name, f);
+            })
+            .catch(error => {
+              console.log("Error: ", error);
+            });
+        }
       })
       .catch(error => {
         console.log(error);

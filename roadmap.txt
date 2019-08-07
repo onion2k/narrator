@@ -1,0 +1,12 @@
+
+// Things to look for
+
+exported variable
+
+exported function - figure out if the function is a helper or a component? what does it return?
+
+exported class - is it a component? extends React? has a render method?
+
+exported default - recursively look up the tree to the default declaration
+
+warn about functions that aren't exported
