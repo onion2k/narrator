@@ -10,11 +10,17 @@ const helpers = require("./lib/helpers");
 const render = require("./lib/render");
 const { writeTest } = require("./lib/writeFile");
 
+const Enumerator = require("./lib/enumerator.js");
+
 const getPt = async function(dec) {
   return await helpers.getPropTypes(dec);
 };
 
 const narrate = async function(file, contents) {
+  const code = new Enumerator(contents);
+
+  console.log("EXPS: ", code.exports);
+
   let pt;
   /**
    * Parse the incoming file to get the AST
@@ -23,6 +29,17 @@ const narrate = async function(file, contents) {
     sourceType: "module",
     plugins: ["jsx", "dynamicImport", "classProperties"]
   });
+
+  /**
+   * Find the exports
+   */
+  const exportDecs = b.program.body.filter(node => {
+    return (
+      node.type === "ExportDefaultDeclaration" ||
+      node.type === "ExportNamedDeclaration"
+    );
+  });
+  // console.log(exportDecs[0].declaration.name);
 
   /**
    * Find the root level variable declarations
@@ -34,7 +51,7 @@ const narrate = async function(file, contents) {
   /**
    * these are the propTypes and defaultProps
    */
-  if (expressionDecs) {
+  if (expressionDecs.length === 2) {
     pt = helpers.parsePropTypes(
       expressionDecs[0].expression.right,
       expressionDecs[1].expression.right
@@ -47,7 +64,7 @@ const narrate = async function(file, contents) {
   const varDecs = b.program.body.filter(node => {
     return node.type === "VariableDeclaration";
   });
-  console.log(varDecs[0].declarations[0].id.name); // name
+  // console.log(varDecs[0].declarations[0].id.name); // name
   // console.log(varDecs[0].declarations[0].init.body.body[0].type); // ReturnStatement
   // console.log(varDecs[0].declarations[0].init.body.body[0].argument.type); // JSXElement
 
@@ -57,17 +74,6 @@ const narrate = async function(file, contents) {
   const classDecs = b.program.body.filter(node => {
     return node.type === "ClassDeclaration";
   });
-
-  /**
-   * Find the exports
-   */
-  const exportDecs = b.program.body.filter(node => {
-    return (
-      node.type === "ExportDefaultDeclaration" ||
-      node.type === "ExportNamedDeclaration"
-    );
-  });
-  console.log(exportDecs[0].declaration.name);
 
   /**
    * Define some things that we'll need to write the file
@@ -115,7 +121,6 @@ const narrate = async function(file, contents) {
   if (ptProm) {
     ptProm
       .then(props => {
-        console.log(props);
         if (props) {
           render(
             "./src/templates/test_default.ejs",

@@ -1,4 +1,6 @@
 {
-  "src": "../Lexograph/client/{,!(static)/**/}/AuthMessage.js",
+  "srcx": "../Lexograph/client/{,!(static)/**/}/builder_flowline.js",
+  "srcx": "../Lexograph/client/{,!(static)/**/}/AuthMessage.js",
+  "src": "../typo/src/Components/Examples.js",
   "storyDir": "./stories"
 }
