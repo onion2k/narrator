@@ -51,21 +51,45 @@ class Enumerator {
       let exportName = exp.declaration.name;
       if (
         exp.declaration.callee &&
-        exp.declaration.callee.callee.name === "connect"
+        exp.declaration.callee.callee.name === "connect" // looks like redux
       ) {
+        // connect only takes one arg so 0 is fine
         exportName = exp.declaration.arguments[0].name;
       }
-      vars.forEach(v => {
-        if (exportName === v.declarations[0].id.name) {
-          exp.enumeratedReactComponent = v;
+      if (exp.declaration.body) {
+        /**
+         * Attempt to check if the exp is a function that returns JSX
+         *
+         * This is going to need to unwind the function to figure out what the returned value actually is.
+         */
+        if (
+          exp.declaration.body.body.filter(node => {
+            return node.type === "ReturnStatement";
+          })[0].argument.type === "JSXElement"
+        ) {
+          exp.enumerated_reactComponent = exp.declaration;
         }
-      });
-      classes.forEach(c => {
-        if (exportName === c.id.name) {
-          exp.enumeratedReactComponent = c;
+      } else {
+        vars.forEach(v => {
+          if (exportName === v.declarations[0].id.name) {
+            exp.enumerated_reactComponent = v;
+          }
+        });
+        classes.forEach(c => {
+          if (exportName === c.id.name) {
+            exp.enumerated_reactComponent = c;
+          }
+        });
+      }
+
+      this.expressions.forEach(expr => {
+        if (exportName === expr.expression.left.object.name) {
+          exp[`enumerated_${expr.expression.left.property.name}`] =
+            expr.expression.right;
         }
       });
     });
+
     return exports;
   }
   // console.log(exportDecs[0].declaration.name);
@@ -92,9 +116,10 @@ class Enumerator {
    * Find the root level variable declarations
    */
   get vars() {
-    return this.json.filter(node => {
+    const variables = this.json.filter(node => {
       return node.type === "VariableDeclaration";
     });
+    return variables;
   }
   // console.log(varDecs[0].declarations[0].id.name); // name
   // console.log(varDecs[0].declarations[0].init.body.body[0].type); // ReturnStatement

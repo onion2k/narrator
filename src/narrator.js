@@ -11,6 +11,7 @@ const render = require("./lib/render");
 const { writeTest } = require("./lib/writeFile");
 
 const Enumerator = require("./lib/enumerator.js");
+const PropTypes = require("./lib/proptypes.js");
 
 const getPt = async function(dec) {
   return await helpers.getPropTypes(dec);
@@ -19,9 +20,15 @@ const getPt = async function(dec) {
 const narrate = async function(file, contents) {
   const code = new Enumerator(contents);
 
-  console.log("EXPS: ", code.exports);
+  console.log(code.exports);
 
-  let pt;
+  let pt = PropTypes.getPropTypes(code.exports[0]);
+  pt.then(data => {
+    console.log("PT: ", data);
+  }).catch(error => {
+    console.log(error);
+  });
+
   /**
    * Parse the incoming file to get the AST
    */
