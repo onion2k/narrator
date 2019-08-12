@@ -29,11 +29,15 @@ class PropTypes {
     });
 
     propTypes.properties.forEach(ptv => {
-      console.log(ptv);
       let f;
       let req = false;
 
-      if (!ptv.value.property) {
+      if (ptv.value.callee) {
+        /**
+         * Chained?
+         */
+        console.log(ptv.key.name);
+      } else if (!ptv.value.property) {
         f = ptv.value.callee.property.name;
       } else if (ptv.value.object && ptv.value.object.property) {
         f = ptv.value.object.property.name;
