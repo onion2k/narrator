@@ -29,6 +29,7 @@ class PropTypes {
     });
 
     propTypes.properties.forEach(ptv => {
+      console.log(ptv);
       let f;
       let req = false;
 

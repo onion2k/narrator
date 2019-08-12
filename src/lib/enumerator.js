@@ -60,7 +60,7 @@ class Enumerator {
         /**
          * Attempt to check if the exp is a function that returns JSX
          *
-         * This is going to need to unwind the function to figure out what the returned value actually is.
+         * This is going to need to unwind the function graph to figure out what the returned value actually is.
          */
         if (
           exp.declaration.body.body.filter(node => {
@@ -76,8 +76,14 @@ class Enumerator {
           }
         });
         classes.forEach(c => {
-          if (exportName === c.id.name) {
-            exp.enumerated_reactComponent = c;
+          if (c.superClass) {
+            if (c.superClass.object && c.superClass.object.name === "React") {
+              if (exportName === c.id.name) {
+                exp.enumerated_reactComponent = c;
+              }
+            }
+          } else {
+            exp.enumerated_class = c;
           }
         });
       }
