@@ -18,14 +18,14 @@ const getPt = async function(dec) {
 };
 
 const narrate = async function(file, contents) {
-  console.log(file);
+  // console.log(file);
   const code = new Enumerator(contents);
 
   // console.log(code.exports);
 
   let pt = PropTypes.getPropTypes(code.exports[0]);
   pt.then(data => {
-    console.log("PT: ", data);
+    // console.log("PT: ", data);
   }).catch(error => {
     console.log(error);
   });

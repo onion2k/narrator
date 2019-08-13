@@ -32,11 +32,22 @@ class PropTypes {
       let f;
       let req = false;
 
-      if (ptv.value.callee) {
+      /**
+       * Loop through the propTypes
+       *
+       * key is the propTypes object key
+       * value is the propType
+       * if it's isRequired then it'll be a callExpression
+       * if it's not required it'll be a memberExpression
+       *
+       * need to unwind the callExpressions to get each call
+       */
+
+      if (ptv.value.type === "CallExpression") {
         /**
          * Chained?
          */
-        console.log(ptv.key.name);
+        unchain(ptv);
       } else if (!ptv.value.property) {
         f = ptv.value.callee.property.name;
       } else if (ptv.value.object && ptv.value.object.property) {
@@ -78,6 +89,10 @@ class PropTypes {
 
     return ptProm;
   }
+}
+
+function unchain(node) {
+  console.log(node.value.callee);
 }
 
 module.exports = PropTypes;
