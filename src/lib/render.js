@@ -2,7 +2,6 @@ const ejs = require("ejs");
 
 const propsToString = function(props) {
   return Object.entries(props).reduce((str, y) => {
-    console.log(y[1]);
     if (y[1].required === false) {
       str += "\t\t// ";
     } else {
