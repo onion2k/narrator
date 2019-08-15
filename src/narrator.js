@@ -24,6 +24,7 @@ const narrate = async function(file, contents) {
   // console.log(code.exports);
 
   let pt = PropTypes.getPropTypes(code.exports[0]);
+
   pt.then(data => {
     // console.log("PT: ", data);
   }).catch(error => {
@@ -60,10 +61,10 @@ const narrate = async function(file, contents) {
    * these are the propTypes and defaultProps
    */
   if (expressionDecs.length === 2) {
-    pt = helpers.parsePropTypes(
-      expressionDecs[0].expression.right,
-      expressionDecs[1].expression.right
-    );
+    // pt = helpers.parsePropTypes(
+    //   expressionDecs[0].expression.right,
+    //   expressionDecs[1].expression.right
+    // );
   }
 
   /**
@@ -72,9 +73,6 @@ const narrate = async function(file, contents) {
   const varDecs = b.program.body.filter(node => {
     return node.type === "VariableDeclaration";
   });
-  // console.log(varDecs[0].declarations[0].id.name); // name
-  // console.log(varDecs[0].declarations[0].init.body.body[0].type); // ReturnStatement
-  // console.log(varDecs[0].declarations[0].init.body.body[0].argument.type); // JSXElement
 
   /**
    * Find the root level class declarations
@@ -108,7 +106,7 @@ const narrate = async function(file, contents) {
           exp.type === "ExportNamedDeclaration"
             ? changeCase.camel(exp.declaration.name)
             : changeCase.pascal(path.basename(file, ".js"));
-        pt = getPt(classDecs);
+        // pt = getPt(classDecs);
         pt.then(data => {
           renderProps = {
             path: relativeComponentPathWithoutExtension,

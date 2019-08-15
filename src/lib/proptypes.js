@@ -47,7 +47,8 @@ class PropTypes {
         /**
          * Chained?
          */
-        unchain(ptv);
+        f = unchain(ptv)[1];
+        req = true;
       } else if (!ptv.value.property) {
         f = ptv.value.callee.property.name;
       } else if (ptv.value.object && ptv.value.object.property) {
@@ -92,7 +93,15 @@ class PropTypes {
 }
 
 function unchain(node) {
-  console.log(node.value.callee);
+  /**
+   * This is 'backwards'. The outermost property is the last property in the chain
+   * Might need to recurse this...
+   */
+  f = [];
+  f.push(node.value.callee.property.name);
+  f.push(node.value.callee.object.property.name);
+  f.push(node.value.callee.object.object.name);
+  return f.reverse();
 }
 
 module.exports = PropTypes;
