@@ -14,3 +14,12 @@ Example.defaultProps = {
 };
 
 export default Example;
+
+/**
+ *
+ * JSonata query
+ *
+ * program.body[type='ExportDefaultDeclaration']
+ * program.body[type='VariableDeclaration'][**.id[name='Example']]
+ *
+ */

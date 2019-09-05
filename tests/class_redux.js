@@ -31,3 +31,10 @@ export default connect(
     propFunction: () => {}
   }
 )(Example);
+
+/**
+ * Jsonata
+ *
+ * program.body[type='ClassDeclaration'][**.id[name='Example']]
+ *
+ */
