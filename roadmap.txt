@@ -10,3 +10,5 @@ exported class - is it a component? extends React? has a render method?
 exported default - recursively look up the tree to the default declaration
 
 warn about functions that aren't exported
+
+use act for hooks
