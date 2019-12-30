@@ -1,12 +1,10 @@
-const fs = require("fs");
-const util = require("util");
-const promise_writeFile = util.promisify(fs.writeFile);
+const fse = require('fs-extra');
 const colors = require("colors");
 
 const write = function(type, dir, file, name, content) {
-  return promise_writeFile(`${dir}/${name}.${type}.js`, content).then(e => {
-    console.log(colors.green(file), ":", colors.red(name));
-  });
+  return fse.outputFile(`./output/${dir}/${name}.${type}.js`, content).then(e => {
+      console.log(colors.green(file), ":", colors.red(name));
+    });
 };
 
 const writeStory = function(storyDir, file, name, story) {

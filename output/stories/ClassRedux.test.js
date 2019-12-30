@@ -6,7 +6,7 @@ import '@testing-library/jest-dom/extend-expect'
 import { MemoryRouter } from 'react-router-dom'
 import { store } from '../store'
 
-import <%= as; %> from '<%= file; %>'
+import ClassRedux from '../tests/class_redux'
 
 afterEach(cleanup)
 
@@ -17,19 +17,22 @@ function renderWithRedux(component) {
   }
 }
 
-test('<%= as; %> renders correctly', async () => {
+test('ClassRedux renders correctly', async () => {
   /**
    * Components that use <Link /> need to be contained in a router. <MemoryRouter> is lightweight and doesn't require any config.
    */
 
   const props = {
-<%- props; %>
+		selectorContent: ()=>{}, //func required
+		propFunction: ()=>{}, //func required
+		// content: 'Default content', //string 
+
   }
 
   const { getByText } = renderWithRedux(
     <MemoryRouter>
       <svg>
-        <<%= component %> {...props} />
+        <ClassRedux {...props} />
       </svg>
     </MemoryRouter>,
   )
