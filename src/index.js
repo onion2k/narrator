@@ -5,10 +5,9 @@ const config = require("./narrator.config.json");
 
 const path = require("path");
 
-const jsonata = require("jsonata");
 const babelParser = require("@babel/parser");
 
-const classDeclaration = jsonata("program.body[type='ClassDeclaration'][**.id[name='Example']]");
+const { ClassDeclaration, ExportDefaultDeclaration, VariableDeclaration } = require("./Extractors");
 
 glob(config.src, {}, function(err, files) {
     if (err) {
@@ -23,8 +22,9 @@ glob(config.src, {}, function(err, files) {
           plugins: ["jsx", "dynamicImport", "classProperties"]
         });
 
-        console.log(classDeclaration.evaluate(b));
-
+        console.log(VariableDeclaration.evaluate(b));
+        
+        // console.log(ClassDeclaration.evaluate(b));
       });
     });
   });

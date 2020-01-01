@@ -9,9 +9,3 @@ export default function Example(data) {
     </div>
   );
 }
-
-/**
- *
- * program.body[type='ExportDefaultDeclaration']
- *
- */
