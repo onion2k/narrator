@@ -1,5 +1,5 @@
 {
-  "src": "./tests/*.js",
+  "src": "./tests/class_redux.js",
   "storyDir": "./stories",
   "testDir": "./tests"
 }
