@@ -1,5 +1,8 @@
 {
-  "src": "./tests/*.js",
+  "src": "./tests/class*.js",
   "storyDir": "./stories",
-  "testDir": "./tests"
+  "testDir": "./tests",
+  "babel": {
+    "plugins": ["jsx", "dynamicImport", "classProperties"]
+  }
 }
