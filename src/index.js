@@ -5,11 +5,11 @@ const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const yep = "Yep".green;
-const nope = "Nope".red;
+const yep = "Yep".green.padStart(5);
+const nope = "Nope".red.padStart(5);
 
 const { React, Redux, PropTypes } = require("./lib/Imports");
-const { Classes, ExportDefault, Exports, Variables } = require("./lib/Extractors");
+const { ExportDefault, Exports, IdentifierName, CalleeName, Classes, Variables, findClassByName } = require("./lib/Extractors");
 
 glob(config.src, {}, function(err, files) {
     if (err) { console.log(err); }
@@ -21,28 +21,32 @@ glob(config.src, {}, function(err, files) {
           plugins: config.babel.plugins
         });
 
-        console.log(file.brightYellow)
-        console.log("React".padEnd(15), (React(b) ? yep : nope).padStart(5) );
-        console.log("Redux".padEnd(15), (Redux(b) ? yep : nope).padStart(5) );
-        console.log("PropTypes".padEnd(15), (PropTypes(b) ? yep : nope).padStart(5) );
+        console.log(file.brightYellow);
+        console.log("React".padEnd(15), (React(b) ? yep : nope) );
+        console.log("Redux".padEnd(15), (Redux(b) ? yep : nope) );
+        console.log("PropTypes".padEnd(15), (PropTypes(b) ? yep : nope) );
 
         const exportDefault = ExportDefault.evaluate(b);
         if (exportDefault) {
           if (exportDefault.declaration.type === "Identifier") {
-            console.log(exportDefault.declaration)
-            console.log("Export Default".padEnd(15), exportDefault.declaration.name.padStart(5) );
+            const identifierName = IdentifierName.evaluate(exportDefault);
+            try {
+              const c = findClassByName.evaluate(b, { identifierName: 'Example' });
+              console.log("Export Default".padEnd(15), (c ? '(Class)' : 'Variable' ), identifierName );
+            } catch(error) {
+              console.log(error);
+            }
             } else if (exportDefault.declaration.type === "CallExpression") {
-            console.log("Export Default".padEnd(15), "Function Call" );
+            console.log("Export Default".padEnd(15), "Function Call:", CalleeName.evaluate(exportDefault).padStart(5) );
           }
         } else {
-          console.log("Export Default".padEnd(15), nope.padStart(5) );
+          console.log("Export Default".padEnd(15), nope );
         }
 
-        console.log("Exports".padEnd(15), (Exports.evaluate(b) ? yep : nope).padStart(5) );
+        console.log("Exports".padEnd(15), (Exports.evaluate(b) ? yep : nope) );
         console.log()
 
       });
-
     });
   });
   
