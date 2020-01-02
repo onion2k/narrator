@@ -1,5 +1,5 @@
 {
-  "src": "./tests/class.js",
+  "src": "./tests/class*.js",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

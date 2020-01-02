@@ -9,11 +9,11 @@ const yep = "Yep".green.padStart(5);
 const nope = "Nope".red.padStart(5);
 
 const { React, Redux, PropTypes } = require("./lib/Imports");
-const { ExportDefault, Exports, IdentifierName, CalleeName, Classes, Variables, findClassByName } = require("./lib/Extractors");
+const { ExportDefault, Exports, IdentifierName, CalleeName, findClassByName, findVariableByName } = require("./lib/Extractors");
 
 glob(config.src, {}, function(err, files) {
     if (err) { console.log(err); }
-  
+
     files.map(file => {
       fs.readFile(file, "utf8", function(err, contents) {
         const b = babelParser.parse(contents, {
@@ -31,13 +31,20 @@ glob(config.src, {}, function(err, files) {
           if (exportDefault.declaration.type === "Identifier") {
             const identifierName = IdentifierName.evaluate(exportDefault);
             try {
-              const c = findClassByName.evaluate(b, { identifierName: 'Example' });
-              console.log("Export Default".padEnd(15), (c ? '(Class)' : 'Variable' ), identifierName );
+              const c = findClassByName.evaluate(b, { identifierName });
+              const v = findVariableByName.evaluate(b, { identifierName });
+              console.log("Export Default".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
             } catch(error) {
               console.log(error);
             }
-            } else if (exportDefault.declaration.type === "CallExpression") {
+          } else if (exportDefault.declaration.type === "CallExpression") {
             console.log("Export Default".padEnd(15), "Function Call:", CalleeName.evaluate(exportDefault).padStart(5) );
+            if (CalleeName.evaluate(exportDefault) === 'connect') {
+              const identifierName = exportDefault.declaration.arguments[0].name;
+              const c = findClassByName.evaluate(b, { identifierName });
+              const v = findVariableByName.evaluate(b, { identifierName });
+              console.log("Connected:".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
+            }
           }
         } else {
           console.log("Export Default".padEnd(15), nope );

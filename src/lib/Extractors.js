@@ -10,4 +10,5 @@ module.exports = {
   IdentifierName: jsonata("declaration.name"),
   CalleeName: jsonata("declaration.callee.callee.name"),
   findClassByName: jsonata("program.body[type='ClassDeclaration'][**[name=$identifierName]]"),
+  findVariableByName: jsonata("program.body[type='VariableDeclaration'][**[name=$identifierName]]"),
 }
