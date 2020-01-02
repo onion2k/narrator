@@ -38,13 +38,17 @@ glob(config.src, {}, function(err, files) {
               console.log(error);
             }
           } else if (exportDefault.declaration.type === "CallExpression") {
-            console.log("Export Default".padEnd(15), "Function Call:", CalleeName.evaluate(exportDefault).padStart(5) );
+            console.log("Export Default".padEnd(15), "(Function)", CalleeName.evaluate(exportDefault).padStart(5) );
             if (CalleeName.evaluate(exportDefault) === 'connect') {
               const identifierName = exportDefault.declaration.arguments[0].name;
               const c = findClassByName.evaluate(b, { identifierName });
               const v = findVariableByName.evaluate(b, { identifierName });
-              console.log("Connected:".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
+              console.log("Callee arg 0".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
             }
+          } else if (exportDefault.declaration.type === "FunctionDeclaration") {
+            console.log("Export Default".padEnd(15), "(Function)", exportDefault.declaration.id.name );
+          } else {
+            console.log("Export Default".padEnd(15), "(Stateless)", exportDefault.declaration.type );
           }
         } else {
           console.log("Export Default".padEnd(15), nope );

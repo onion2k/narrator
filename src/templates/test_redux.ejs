@@ -1,21 +1,37 @@
 // import dependencies
 import React from 'react'
+import { Provider } from 'react-redux'
 import { render, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
+import { MemoryRouter } from 'react-router-dom'
+import { store } from '../store'
 
 import <%= as; %> from '<%= file; %>'
 
 afterEach(cleanup)
 
+function renderWithRedux(component) {
+  return {
+    ...render(<Provider store={store}>{component}</Provider>),
+    store,
+  }
+}
+
 test('<%= as; %> renders correctly', async () => {
+  /**
+   * Components that use <Link /> need to be contained in a router. <MemoryRouter> is lightweight and doesn't require any config.
+   */
+
   const props = {
 <%- props; %>
   }
 
   const { getByText } = renderWithRedux(
+    <MemoryRouter>
       <svg>
         <<%= component %> {...props} />
-      </svg>,
+      </svg>
+    </MemoryRouter>,
   )
   expect(getByText('Test Title')).toBeVisible()
 })
