@@ -1,5 +1,5 @@
 {
-  "src": "./tests/functional_proptypes.js",
+  "src": "./tests/*.js",
   "storyDir": "./stories",
   "testDir": "./tests"
 }
