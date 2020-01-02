@@ -12,7 +12,7 @@ test('<%= as; %> renders correctly', async () => {
 <%- props; %>
   }
 
-  const { getByText } = renderWithRedux(
+  const { getByText } = render(
       <svg>
         <<%= component %> {...props} />
       </svg>,
