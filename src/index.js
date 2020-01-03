@@ -46,8 +46,16 @@ glob(config.src, {}, function(err, files) {
               const identifierName = exportDefault.declaration.arguments[0].name;
               const x = find(b, identifierName);
               def("Callee arg 0", x, identifierName);
-              const pt = propTypesToObject(findClassPropTypes(x));
-              console.log("Props".padEnd(15), JSON.stringify(pt));
+              if (x !== null) {
+                console.log(x.type)
+                if (x.type === "ClassDeclaration") {
+                  const pt = propTypesToObject(findClassPropTypes(x));
+                  console.log("Props".padEnd(15), JSON.stringify(pt));
+                } else if (x.type === "VariableDeclaration") {
+                  const pt = propTypesToObject(findExpressionPropTypes(x));
+                  console.log("Props".padEnd(15), JSON.stringify(pt));
+                }
+              }
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
             console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );

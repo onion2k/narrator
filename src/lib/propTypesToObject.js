@@ -10,9 +10,11 @@ const propTypesToObject = ({ pt, pd }) => {
 
   let props = {};
 
-  propTypes.forEach((prop) => {
-    props[prop.key.name] = '';
-  });
+  if (propTypes) {
+    propTypes.forEach((prop) => {
+      props[prop.key.name] = '';
+    });
+  }
 
   if (defaultProps) {
     defaultProps.forEach((prop) => {

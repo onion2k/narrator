@@ -12,16 +12,19 @@ const find = (b, identifierName) => {
 }
 
 const findExpressionPropTypes = (b, identifierName) => {
-  let pt, pd;
-  Expressions.evaluate(b).forEach((exp) => {
-    if (exp.expression.left.object.name === identifierName) {
-      if (exp.expression.left.property.name === 'propTypes') {
-        pt = exp.expression.right;
-      } else if (exp.expression.left.property.name === 'defaultProps') {
-        pd = exp.expression.right;
+  let pt = {};
+  let pd = {};
+  if (Expressions.evaluate(b)) {
+    Expressions.evaluate(b).forEach((exp) => {
+      if (exp.expression.left.object.name === identifierName) {
+        if (exp.expression.left.property.name === 'propTypes') {
+          pt = exp.expression.right;
+        } else if (exp.expression.left.property.name === 'defaultProps') {
+          pd = exp.expression.right;
+        }
       }
-    }
-  })
+    });  
+  }
   return { pt, pd };
 }
 
