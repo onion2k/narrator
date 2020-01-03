@@ -6,11 +6,14 @@ const Example = ({ content }) => {
 };
 
 Example.propTypes = {
-  content: PropTypes.string
+  id: PropTypes.string.isRequired,
+  content: PropTypes.string,
+  content2: PropTypes.string,
 };
 
 Example.defaultProps = {
-  content: "Default string"
+  content: "Default string",
+  content2: "More content"
 };
 
 export default Example;

@@ -6,8 +6,9 @@ const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const { ExportDefault, IdentifierName, CalleeName, PropTypes } = require("./lib/Extractors");
-const { find, findPropTypes } = require("./lib/SearchAST.js");
+const { ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
+const { find, findExpressionPropTypes, findClassPropTypes } = require("./lib/SearchAST.js");
+const { propTypesToObject } = require("./lib/propTypesToObject");
 
 glob(config.src, {}, function(err, files) {
     if (err) { console.log(err); }
@@ -27,21 +28,26 @@ glob(config.src, {}, function(err, files) {
             const identifierName = IdentifierName.evaluate(exportDefault);
             try {
               const x = find(b, identifierName);
-              const pt = findPropTypes(x);
-              console.log(pt)
-              def("Export Default", x, identifierName)
+              def("Export Def I", x, identifierName)
+              let pt;
+              if (x.type === "ClassDeclaration") {
+                pt = propTypesToObject(findClassPropTypes(x, identifierName));
+              } else if (x.type === "VariableDeclaration") {
+                pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+              }
+              console.log("Props".padEnd(15), JSON.stringify(pt));
             } catch(error) {
               console.log(error);
             }
           } else if (exportDefault.declaration.type === "CallExpression") {
             const CallExpressionName = CalleeName.evaluate(exportDefault);
-            console.log("Export Default".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
+            console.log("Export Def CE".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
             if (CalleeName.evaluate(exportDefault) === 'connect') {
               const identifierName = exportDefault.declaration.arguments[0].name;
               const x = find(b, identifierName);
-              const pt = findPropTypes(x);
-              console.log(pt)
-              def("Callee arg 0", x, identifierName)
+              def("Callee arg 0", x, identifierName);
+              const pt = propTypesToObject(findClassPropTypes(x));
+              console.log("Props".padEnd(15), JSON.stringify(pt));
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
             console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
