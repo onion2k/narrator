@@ -1,15 +1,13 @@
 const fs = require("fs");
 const glob = require("glob");
-const colors = require("colors");
+require("colors");
+const { report, def } = require("./reporting");
 const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const yep = "Yep".green.padStart(5);
-const nope = "Nope".red.padStart(5);
-
-const { React, Redux, PropTypes } = require("./lib/Imports");
-const { ExportDefault, Exports, IdentifierName, CalleeName, findClassByName, findVariableByName } = require("./lib/Extractors");
+const { ExportDefault, IdentifierName, CalleeName, PropTypes } = require("./lib/Extractors");
+const { find, findPropTypes } = require("./lib/SearchAST.js");
 
 glob(config.src, {}, function(err, files) {
     if (err) { console.log(err); }
@@ -21,40 +19,58 @@ glob(config.src, {}, function(err, files) {
           plugins: config.babel.plugins
         });
 
-        console.log(file.brightYellow);
-        console.log("React".padEnd(15), (React(b) ? yep : nope) );
-        console.log("Redux".padEnd(15), (Redux(b) ? yep : nope) );
-        console.log("PropTypes".padEnd(15), (PropTypes(b) ? yep : nope) );
+        report(file, b);
 
         const exportDefault = ExportDefault.evaluate(b);
         if (exportDefault) {
           if (exportDefault.declaration.type === "Identifier") {
             const identifierName = IdentifierName.evaluate(exportDefault);
             try {
-              const c = findClassByName.evaluate(b, { identifierName });
-              const v = findVariableByName.evaluate(b, { identifierName });
-              console.log("Export Default".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
+              const x = find(b, identifierName);
+              const pt = findPropTypes(x);
+              console.log(pt)
+              def("Export Default", x, identifierName)
             } catch(error) {
               console.log(error);
             }
           } else if (exportDefault.declaration.type === "CallExpression") {
-            console.log("Export Default".padEnd(15), "(Function)", CalleeName.evaluate(exportDefault).padStart(5) );
+            const CallExpressionName = CalleeName.evaluate(exportDefault);
+            console.log("Export Default".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
             if (CalleeName.evaluate(exportDefault) === 'connect') {
               const identifierName = exportDefault.declaration.arguments[0].name;
-              const c = findClassByName.evaluate(b, { identifierName });
-              const v = findVariableByName.evaluate(b, { identifierName });
-              console.log("Callee arg 0".padEnd(15), (c ? '(Class)' : v ? '(Variable)' : '(No idea)' ), identifierName );
+              const x = find(b, identifierName);
+              const pt = findPropTypes(x);
+              console.log(pt)
+              def("Callee arg 0", x, identifierName)
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
-            console.log("Export Default".padEnd(15), "(Function)", exportDefault.declaration.id.name );
+            console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
+            if (exportDefault.declaration.params) {
+              // need to evaluate what each param actually is ...
+              exportDefault.declaration.params.forEach(param => {
+                if (param.type === 'ObjectPattern') {
+                  // destructured object
+                  console.log("{");
+                  param.properties.forEach(element => {
+                    console.log(" ",element.key.name);
+                  })
+                  console.log("}");
+                } else if (param.type === 'AssignmentPattern') {
+                  // variable with default
+                  console.log(param.left.name);
+                } else if (param.type === 'Identifier') {
+                  // variable
+                  console.log(param.name);
+                }
+              });
+            }
           } else {
-            console.log("Export Default".padEnd(15), "(Stateless)", exportDefault.declaration.type );
+            console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
           }
         } else {
-          console.log("Export Default".padEnd(15), nope );
+          console.log("Export Default".padEnd(15), "Not found".red );
         }
 
-        console.log("Exports".padEnd(15), (Exports.evaluate(b) ? yep : nope) );
         console.log()
 
       });

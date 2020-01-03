@@ -1,5 +1,6 @@
 {
-  "src": "./tests/*.js",
+  "src": "./tests/class.js",
+  "src_": "../structureflow/sf-web-ui/client/builder/**/*.js",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {
