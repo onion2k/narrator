@@ -12,6 +12,7 @@ const propTypesToObject = ({ pt, pd }) => {
 
   if (propTypes) {
     propTypes.forEach((prop) => {
+      console.log(prop.value.property ? prop.value.property.name : prop.value.callee.object.property.name)
       props[prop.key.name] = '';
     });
   }
