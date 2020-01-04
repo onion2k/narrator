@@ -140,7 +140,6 @@ Tab.defaultProps = {
     primaryId: 0,
 }
 
-
 const mountPoints = Array.from(document.querySelectorAll('.react-branch-selector'));
 
 if (mountPoints && mountPoints.length > 0) {

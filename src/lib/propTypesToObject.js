@@ -18,7 +18,7 @@ const propTypesToObject = ({ pt, pd }) => {
 
   if (defaultProps) {
     defaultProps.forEach((prop) => {
-      props[prop.key.name] = prop.value.value;
+      props[prop.key.name] = prop.value.value ? prop.value.value : "Undefined";
     });  
   }
 

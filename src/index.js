@@ -32,6 +32,9 @@ glob(config.src, {}, function(err, files) {
               let pt;
               if (x.type === "ClassDeclaration") {
                 pt = propTypesToObject(findClassPropTypes(x, identifierName));
+
+                pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+
               } else if (x.type === "VariableDeclaration") {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
