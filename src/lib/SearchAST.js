@@ -4,6 +4,7 @@ const { Expressions } = require("./Extractors");
 
 const findClassByName = jsonata("program.body[type='ClassDeclaration'][**[name=$identifierName]]");
 const findVariableByName =  jsonata("program.body[type='VariableDeclaration'][**[name=$identifierName]]");
+const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$classProperty].value");
 
 const find = (b, identifierName) => {
   const c = findClassByName.evaluate(b, { identifierName });
@@ -29,8 +30,8 @@ const findExpressionPropTypes = (b, identifierName) => {
 }
 
 const findClassPropTypes = (x) => {
-  const pt = jsonata("body.body[type='ClassProperty'][key.name='propTypes'].value").evaluate(x);
-  const pd = jsonata("body.body[type='ClassProperty'][key.name='defaultProps'].value").evaluate(x);
+  const pt = findClassProperty.evaluate(x, { classProperty: 'propTypes' });
+  const pd = findClassProperty.evaluate(x, { classProperty: 'defaultProps' });
   return { pt, pd };
 }
 
