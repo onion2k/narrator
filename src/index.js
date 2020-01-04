@@ -31,10 +31,11 @@ glob(config.src, {}, function(err, files) {
               def("Export Def I", x, identifierName)
               let pt;
               if (x.type === "ClassDeclaration") {
+                // proptypes might be defined as external expression statements
                 pt = propTypesToObject(findClassPropTypes(x, identifierName));
-
-                pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
-
+                if (!Object.keys(pt).length) {
+                  pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+                }
               } else if (x.type === "VariableDeclaration") {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
