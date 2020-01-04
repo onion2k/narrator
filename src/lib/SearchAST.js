@@ -17,6 +17,9 @@ const findExpressionPropTypes = (b, identifierName) => {
   let pd = {};
   if (Expressions.evaluate(b)) {
     Expressions.evaluate(b).forEach((exp) => {
+
+      // expand expressions there return propTypes and defaults?
+      
       if (exp.expression.left.object.name === identifierName) {
         if (exp.expression.left.property.name === 'propTypes') {
           pt = exp.expression.right;
