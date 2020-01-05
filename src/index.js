@@ -62,6 +62,7 @@ glob(config.src, {}, function(err, files) {
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
             console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
+            // needs to be a function for understanding params
             if (exportDefault.declaration.params) {
               const pt = {};
               let objCount = 0;

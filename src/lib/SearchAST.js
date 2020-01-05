@@ -5,6 +5,7 @@ const { Expressions } = require("./Extractors");
 const findClassByName = jsonata("program.body[type='ClassDeclaration'][**[name=$identifierName]]");
 const findVariableByName =  jsonata("program.body[type='VariableDeclaration'][**[name=$identifierName]]");
 const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$classProperty].value");
+const findExpressionsByLeftIdentifierName = jsonata("program.body[type='ExpressionStatement'].expression[**[name=$identifierName]]");
 
 const find = (b, identifierName) => {
   const c = findClassByName.evaluate(b, { identifierName });
@@ -15,17 +16,19 @@ const find = (b, identifierName) => {
 const findExpressionPropTypes = (b, identifierName) => {
   let pt = {};
   let pd = {};
-  if (Expressions.evaluate(b)) {
-    Expressions.evaluate(b).forEach((exp) => {
+  if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
+    findExpressionsByLeftIdentifierName.evaluate(b, { identifierName }).forEach((exp) => {
       // expand expressions there return propTypes and defaults?
-      if (exp.expression.left.object.name === identifierName) {
-        if (exp.expression.left.property.name === 'propTypes') {
-          pt = exp.expression.right;
-        } else if (exp.expression.left.property.name === 'defaultProps') {
-          pd = exp.expression.right;
-        }
+      if (exp.left.property.name === 'propTypes') {
+        pt = exp.right;
+      } else if (exp.left.property.name === 'defaultProps') {
+        pd = exp.right;
       }
     });  
+  } else {
+    // component defined as assignment and then exported separately
+    const v = findVariableByName.evaluate(b, { identifierName });
+    // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
   return { pt, pd };
 }
