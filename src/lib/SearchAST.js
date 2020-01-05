@@ -1,7 +1,5 @@
 const jsonata = require("jsonata");
 
-const { Expressions } = require("./Extractors");
-
 const findClassByName = jsonata("program.body[type='ClassDeclaration'][**[name=$identifierName]]");
 const findVariableByName =  jsonata("program.body[type='VariableDeclaration'][**[name=$identifierName]]");
 const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$classProperty].value");
