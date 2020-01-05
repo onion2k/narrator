@@ -6,7 +6,7 @@ const Example = ({ content }) => {
 };
 
 Example.propTypes = {
-  id: PropTypes.string.isRequired(),
+  id: PropTypes.string.isRequired,
   content: PropTypes.string,
   content2: PropTypes.string,
 };

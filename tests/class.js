@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 
 class Example extends React.Component {
   static propTypes = {
-    selectorContent: PropTypes.func.isRequired(),
-    propFunction: PropTypes.func.isRequired(),
+    selectorContent: PropTypes.func.isRequired,
+    propFunction: PropTypes.func.isRequired,
     content: PropTypes.string
   };
 

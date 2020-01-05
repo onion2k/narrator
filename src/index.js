@@ -51,7 +51,6 @@ glob(config.src, {}, function(err, files) {
               const x = find(b, identifierName);
               def("Callee arg 0", x, identifierName);
               if (x !== null) {
-                console.log(x.type)
                 if (x.type === "ClassDeclaration") {
                   const pt = propTypesToObject(findClassPropTypes(x));
                   console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
@@ -64,23 +63,25 @@ glob(config.src, {}, function(err, files) {
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
             console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
             if (exportDefault.declaration.params) {
+              const pt = {};
+              let objCount = 0;
               // need to evaluate what each param actually is ...
               exportDefault.declaration.params.forEach(param => {
                 if (param.type === 'ObjectPattern') {
                   // destructured object
-                  console.log("{");
+                  objCount++
+                  pt[`obj${objCount}`] = {};
                   param.properties.forEach(element => {
-                    console.log(" ", element.key.name);
+                    pt[`obj${objCount}`][element.key.name] = '';
                   })
-                  console.log("}");
                 } else if (param.type === 'AssignmentPattern') {
-                  // variable with default
-                  console.log(param.left.name);
+                  // expand using the same recusrive function as propttypes based on types
+                  pt[param.left.name] = param.right.value;
                 } else if (param.type === 'Identifier') {
-                  // variable
-                  console.log(param.name);
+                  pt[param.name] = '';
                 }
               });
+              console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
             }
           } else {
             console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
