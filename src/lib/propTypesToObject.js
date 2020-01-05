@@ -9,7 +9,6 @@ const propTypesToObject = ({ pt, pd }) => {
   const defaultProps = defaultPropsProperties.evaluate(pd);
 
   let props = {};
-
   if (propTypes) {
     propTypes.forEach((prop) => {
       switch (prop.value.type) {

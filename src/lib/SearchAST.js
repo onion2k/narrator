@@ -5,6 +5,8 @@ const findVariableByName =  jsonata("program.body[type='VariableDeclaration'][**
 const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$classProperty].value");
 const findExpressionsByLeftIdentifierName = jsonata("program.body[type='ExpressionStatement'].expression[**[name=$identifierName]]");
 
+const { declarationParamsToObject } = require('./AST')
+
 const find = (b, identifierName) => {
   const c = findClassByName.evaluate(b, { identifierName });
   const v = findVariableByName.evaluate(b, { identifierName });
@@ -18,14 +20,17 @@ const findExpressionPropTypes = (b, identifierName) => {
     findExpressionsByLeftIdentifierName.evaluate(b, { identifierName }).forEach((exp) => {
       // expand expressions there return propTypes and defaults?
       if (exp.left.property.name === 'propTypes') {
-        pt = exp.right;
+        pt = { properties: exp.right };
       } else if (exp.left.property.name === 'defaultProps') {
-        pd = exp.right;
+        pd = { properties: exp.right };
       }
     });  
   } else {
     // component defined as assignment and then exported separately
     const v = findVariableByName.evaluate(b, { identifierName });
+    v.declarations.forEach((variable) => {
+      pt = declarationParamsToObject(variable.init)
+    });
     // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
   return { pt, pd };
