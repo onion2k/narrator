@@ -70,15 +70,43 @@ glob(config.src, {}, function(err, files) {
                 if (param.type === 'ObjectPattern') {
                   // destructured object
                   objCount++
-                  pt[`obj${objCount}`] = {};
+                  pt[`obj${objCount}`] = {
+                    type: 'Object',
+                    value: {},
+                    required: false
+                  };
                   param.properties.forEach(element => {
-                    pt[`obj${objCount}`][element.key.name] = '';
+                    switch (element.value.type) {
+                      case "Identifier":
+                        pt[`obj${objCount}`].value[element.key.name] = {
+                          type: '',
+                          value: '',
+                          required: true
+                        };
+                        break;
+                      case "AssignmentPattern":
+                        // If it's an assignment then there's a default, so it's not required
+                        pt[`obj${objCount}`].value[element.key.name] = {
+                          type: element.value.right.type,
+                          value: element.value.right.value || "Function",
+                          required: false
+                        };
+                        break;
+                    }
                   })
                 } else if (param.type === 'AssignmentPattern') {
                   // expand using the same recusrive function as propttypes based on types
-                  pt[param.left.name] = param.right.value;
+                  pt[param.left.name] = {
+                    type: param.right.type,
+                    value: param.right.value,
+                    required: false
+                  };
                 } else if (param.type === 'Identifier') {
-                  pt[param.name] = '';
+                  pt[param.name] = {
+                    type: '',
+                    value: '',
+                    required: false
+                  };
                 }
               });
               console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
