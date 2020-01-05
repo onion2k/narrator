@@ -39,7 +39,7 @@ glob(config.src, {}, function(err, files) {
               } else if (x.type === "VariableDeclaration") {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
-              console.log("Props".padEnd(15), JSON.stringify(pt));
+              console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
             } catch(error) {
               console.log(error);
             }
@@ -54,10 +54,10 @@ glob(config.src, {}, function(err, files) {
                 console.log(x.type)
                 if (x.type === "ClassDeclaration") {
                   const pt = propTypesToObject(findClassPropTypes(x));
-                  console.log("Props".padEnd(15), JSON.stringify(pt));
+                  console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 } else if (x.type === "VariableDeclaration") {
                   const pt = propTypesToObject(findExpressionPropTypes(x));
-                  console.log("Props".padEnd(15), JSON.stringify(pt));
+                  console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 }
               }
             }
@@ -70,7 +70,7 @@ glob(config.src, {}, function(err, files) {
                   // destructured object
                   console.log("{");
                   param.properties.forEach(element => {
-                    console.log(" ",element.key.name);
+                    console.log(" ", element.key.name);
                   })
                   console.log("}");
                 } else if (param.type === 'AssignmentPattern') {

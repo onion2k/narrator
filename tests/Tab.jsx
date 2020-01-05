@@ -136,8 +136,8 @@ Tab.propTypes = {
 }
 
 Tab.defaultProps = {
-    items: [],
-    primaryId: 0,
+    items: ['wobble', 123, "x"],
+    primaryId: 0
 }
 
 const mountPoints = Array.from(document.querySelectorAll('.react-branch-selector'));
