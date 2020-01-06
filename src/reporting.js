@@ -1,19 +1,19 @@
 require("colors");
+const { ExportDefault } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
-
-const yep = "Yep".green.padStart(5);
-const nope = "Nope".red.padStart(5);
 
 module.exports = {
   report: (file, b) => {
-    console.log(file.brightYellow);
-    console.log("React".padEnd(15), (React(b) ? yep : nope) );
-    console.log("Redux".padEnd(15), (Redux(b) ? yep : nope) );
-    console.log("PropTypes".padEnd(15), (PropTypes(b) ? yep : nope) ); 
+    console.log(file.brightYellow.padEnd(48),
+      (React(b) ? "React".green.padEnd(16) : "React".red.padEnd(16)),
+      (Redux(b) ? "Redux".green.padEnd(16) : "Redux".red.padEnd(16)),
+      (PropTypes(b) ? "PropTypes".green.padEnd(20) : "PropTypes".red.padEnd(20)),
+      (ExportDefault.evaluate(b) ? "ExportDefault".green.padEnd(24) : "ExportDefault".red.padEnd(24))
+    );
   },
   def: (type, x, identifierName) => {
     if (x===null) {
-      console.log(type.padEnd(15), "NULL", identifierName );
+      // console.log(type.padEnd(15), "NULL", identifierName );
       return;
     }
     if (x.type==="ClassDeclaration") {
@@ -28,11 +28,11 @@ module.exports = {
             break;
         }
       }
-      console.log(type.padEnd(15), className, identifierName );
+      // console.log(type.padEnd(15), className, identifierName );
     } else if (x.type==="VariableDeclaration") {
-      console.log(type.padEnd(15), '(Variable)', identifierName );
+      // console.log(type.padEnd(15), '(Variable)', identifierName );
     } else {
-      console.log(type.padEnd(15),'(No idea)', identifierName );
+      // console.log(type.padEnd(15),'(No idea)', identifierName );
     }
   }
 }

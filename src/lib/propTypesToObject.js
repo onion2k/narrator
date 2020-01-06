@@ -13,11 +13,11 @@ const propTypesToObject = ({ pt, pd }) => {
     propTypes.forEach((prop) => {
       switch (prop.value.type) {
         case "MemberExpression":
-          console.log(prop.key.name, prop.value.type)
+          // console.log(prop.key.name, prop.value.type)
           break;
         case "CallExpression":
           // value callee
-          console.log(prop.key.name, prop.value.callee.type)
+          // console.log(prop.key.name, prop.value.callee.type)
           break;
         
       }

@@ -40,13 +40,13 @@ glob(config.src, {}, function(err, files) {
               } else if (x.type === "VariableDeclaration") {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
-              console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
+              // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
             } catch(error) {
               console.log(error);
             }
           } else if (exportDefault.declaration.type === "CallExpression") {
             const CallExpressionName = CalleeName.evaluate(exportDefault);
-            console.log("Export Def CE".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
+            // console.log("Export Def CE".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
             if (CalleeName.evaluate(exportDefault) === 'connect') {
               const identifierName = exportDefault.declaration.arguments[0].name;
               const x = find(b, identifierName);
@@ -54,25 +54,25 @@ glob(config.src, {}, function(err, files) {
               if (x !== null) {
                 if (x.type === "ClassDeclaration") {
                   const pt = propTypesToObject(findClassPropTypes(x));
-                  console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
+                  // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 } else if (x.type === "VariableDeclaration") {
                   const pt = propTypesToObject(findExpressionPropTypes(x));
-                  console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
+                  // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 }
               }
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
-            console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
+            // console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
             const pt = declarationParamsToObject(exportDefault.declaration);
-            console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
+            // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
           } else {
-            console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
+            // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
           }
         } else {
-          console.log("Export Default".padEnd(15), "Not found".red );
+          // console.log("Export Default".padEnd(15), "Not found".red );
         }
 
-        console.log()
+        // console.log()
 
       });
     });
