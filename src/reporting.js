@@ -1,14 +1,17 @@
 require("colors");
-const { ExportDefault } = require("./lib/Extractors");
+const { ExportDefault, Exports } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
 
 module.exports = {
-  report: (file, b) => {
-    console.log(file.brightYellow.padEnd(48),
-      (React(b) ? "React".green.padEnd(16) : "React".red.padEnd(16)),
-      (Redux(b) ? "Redux".green.padEnd(16) : "Redux".red.padEnd(16)),
-      (PropTypes(b) ? "PropTypes".green.padEnd(20) : "PropTypes".red.padEnd(20)),
-      (ExportDefault.evaluate(b) ? "ExportDefault".green.padEnd(24) : "ExportDefault".red.padEnd(24))
+  report: (file, b, pt) => {
+    const exports = Exports.evaluate(b);
+    console.log(file.brightYellow.padEnd(120),
+      (React(b) ? "React".green.padEnd(17) : "React".red.padEnd(17)),
+      (Redux(b) ? "Redux".green.padEnd(17) : "Redux".red.padEnd(17)),
+      (PropTypes(b) ? "PropTypes".green.padEnd(21) : "PropTypes".red.padEnd(21)),
+      (ExportDefault.evaluate(b) ? "Default Export".green.padEnd(26) : "Default Export".red.padEnd(26)),
+      (exports ? `Named Exports: ${exports.length || 1}`.green.padEnd(28) : "No Named Exports".red.padEnd(28)),
+      (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.green.padEnd(11) : "No Props".red.padEnd(11))
     );
   },
   def: (type, x, identifierName) => {

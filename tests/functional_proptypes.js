@@ -12,6 +12,7 @@ Example.propTypes = {
 };
 
 Example.defaultProps = {
+  
   content: "Default string",
   content2: "More content"
 };

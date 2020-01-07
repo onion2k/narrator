@@ -16,15 +16,29 @@ const find = (b, identifierName) => {
 const findExpressionPropTypes = (b, identifierName) => {
   let pt = {};
   let pd = {};
+
+  if (!identifierName) { console.log('Missing ID'); return { pt, pd }; }
+
   if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
-    findExpressionsByLeftIdentifierName.evaluate(b, { identifierName }).forEach((exp) => {
-      // expand expressions there return propTypes and defaults?
-      if (exp.left.property.name === 'propTypes') {
-        pt = { properties: exp.right };
-      } else if (exp.left.property.name === 'defaultProps') {
-        pd = { properties: exp.right };
+    const expressions = findExpressionsByLeftIdentifierName.evaluate(b, { identifierName });
+    if (Symbol.iterator in Object(expressions)) {
+      expressions.forEach((exp) => {
+        // expand expressions there return propTypes and defaults?
+        if (exp.left.property.name === 'propTypes') {
+          pt = { properties: exp.right };
+        } else if (exp.left.property.name === 'defaultProps') {
+          pd = { properties: exp.right };
+        }
+      });
+    } else {
+      // only one expression was found
+      if (expressions.left.property.name === 'propTypes') {
+        pt = { properties: expressions.right };
+      } else if (expressions.left.property.name === 'defaultProps') {
+        pd = { properties: expressions.right };
       }
-    });  
+    }
+  
   } else {
     // component defined as assignment and then exported separately
     const v = findVariableByName.evaluate(b, { identifierName });
@@ -33,7 +47,7 @@ const findExpressionPropTypes = (b, identifierName) => {
     });
     // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
-  return { pt, pd };
+  return { pt: pt.properties, pd: pd.properties };
 }
 
 const findClassPropTypes = (x) => {

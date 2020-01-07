@@ -15,22 +15,25 @@ glob(config.src, {}, function(err, files) {
     if (err) { console.log(err); }
 
     files.map(file => {
+
       fs.readFile(file, "utf8", function(err, contents) {
+
+        let pt = {};
+
         const b = babelParser.parse(contents, {
           sourceType: "module",
           plugins: config.babel.plugins
         });
 
-        report(file, b);
-
         const exportDefault = ExportDefault.evaluate(b);
+
         if (exportDefault) {
           if (exportDefault.declaration.type === "Identifier") {
             const identifierName = IdentifierName.evaluate(exportDefault);
             try {
               const x = find(b, identifierName);
+              if (!x) return;
               def("Export Def I", x, identifierName)
-              let pt;
               if (x.type === "ClassDeclaration") {
                 // proptypes might be defined as external expression statements
                 pt = propTypesToObject(findClassPropTypes(x, identifierName));
@@ -53,17 +56,17 @@ glob(config.src, {}, function(err, files) {
               def("Callee arg 0", x, identifierName);
               if (x !== null) {
                 if (x.type === "ClassDeclaration") {
-                  const pt = propTypesToObject(findClassPropTypes(x));
+                  pt = propTypesToObject(findClassPropTypes(x));
                   // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 } else if (x.type === "VariableDeclaration") {
-                  const pt = propTypesToObject(findExpressionPropTypes(x));
+                  pt = propTypesToObject(findExpressionPropTypes(x));
                   // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
                 }
               }
             }
           } else if (exportDefault.declaration.type === "FunctionDeclaration") {
             // console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
-            const pt = declarationParamsToObject(exportDefault.declaration);
+            pt = declarationParamsToObject(exportDefault.declaration);
             // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
           } else {
             // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
@@ -72,7 +75,7 @@ glob(config.src, {}, function(err, files) {
           // console.log("Export Default".padEnd(15), "Not found".red );
         }
 
-        // console.log()
+        report(file, b, pt);
 
       });
     });
