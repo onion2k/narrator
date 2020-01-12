@@ -72,17 +72,16 @@ glob(config.src, {}, function(err, files) {
             // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
           }
         } else {
-          // console.log("Export Default".padEnd(15), "Not found".red );
           const exps = Exports.evaluate(b);
           if (exps) {
-            if (!Object.keys(exps).length) {
-              console.log("Named:", exps.map(
+            if (exps.length) {
+              exps.map(
                 (exp) => {
-                  console.log(exp)
-                })
-              );
+                  console.log(exp.declaration.declarations[0].id.name);
+                }
+              )
             } else {
-              console.log(exps)
+              console.log(exps.declaration.declarations[0].id.name);
             }
           }
         }
