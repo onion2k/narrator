@@ -5,13 +5,16 @@ const { React, Redux, PropTypes } = require("./lib/Imports");
 module.exports = {
   report: (file, b, pt) => {
     const exports = Exports.evaluate(b);
-    console.log(file.brightYellow.padEnd(120),
-      (React(b) ? "React".green.padEnd(17) : "React".red.padEnd(17)),
-      (Redux(b) ? "Redux".green.padEnd(17) : "Redux".red.padEnd(17)),
-      (PropTypes(b) ? "PropTypes".green.padEnd(21) : "PropTypes".red.padEnd(21)),
-      (ExportDefault.evaluate(b) ? "Default Export".green.padEnd(26) : "Default Export".red.padEnd(26)),
-      (exports ? `Named Exports: ${exports.length || 1}`.green.padEnd(28) : "No Named Exports".red.padEnd(28)),
-      (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.green.padEnd(11) : "No Props".red.padEnd(11))
+    if (file.length > 100) {
+      file = file.substring(file.length - 103)
+    }
+    console.log(file.brightYellow.padEnd(100),
+      (React(b) ? "R".green.padEnd(11) : "R".red.padEnd(11)),
+      (Redux(b) ? "Rdx".green.padEnd(13) : "Rdx".red.padEnd(13)),
+      (PropTypes(b) ? "PT".green.padEnd(13) : "PT".red.padEnd(13)),
+      (ExportDefault.evaluate(b) ? "D".green.padEnd(12) : "D".red.padEnd(12)),
+      (exports ? `N: ${exports.length || 1}`.green.padEnd(16) : "N".red.padEnd(16)),
+      (Object.keys(pt).length ? `P: ${Object.keys(pt).length}`.green.padEnd(11) : "No Props".red.padEnd(11))
     );
   },
   def: (type, x, identifierName) => {
