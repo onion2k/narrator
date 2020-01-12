@@ -6,7 +6,7 @@ const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const { ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
+const { Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
 const { find, findExpressionPropTypes, findClassPropTypes } = require("./lib/SearchAST.js");
 const { propTypesToObject } = require("./lib/propTypesToObject");
 const { declarationParamsToObject } = require('./lib/AST')
@@ -73,6 +73,18 @@ glob(config.src, {}, function(err, files) {
           }
         } else {
           // console.log("Export Default".padEnd(15), "Not found".red );
+          const exps = Exports.evaluate(b);
+          if (exps) {
+            if (!Object.keys(exps).length) {
+              console.log("Named:", exps.map(
+                (exp) => {
+                  console.log(exp)
+                })
+              );
+            } else {
+              console.log(exps)
+            }
+          }
         }
 
         report(file, b, pt);
