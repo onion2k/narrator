@@ -1,7 +1,7 @@
 const fs = require("fs");
 const glob = require("glob");
 require("colors");
-const { report, def } = require("./reporting");
+const { report, def, callInterogator } = require("./reporting");
 const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
@@ -77,11 +77,11 @@ glob(config.src, {}, function(err, files) {
             if (exps.length) {
               exps.map(
                 (exp) => {
-                  console.log(exp.declaration.declarations[0].id.name);
+                  callInterogator(exp.declaration.declarations[0]);
                 }
               )
             } else {
-              console.log(exps.declaration.declarations[0].id.name);
+              callInterogator(exps.declaration.declarations[0]);
             }
           }
         }

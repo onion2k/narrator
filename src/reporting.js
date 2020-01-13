@@ -40,5 +40,31 @@ module.exports = {
     } else {
       // console.log(type.padEnd(15),'(No idea)', identifierName );
     }
+  },
+  callInterogator: (callee) => {
+    switch (callee.init.type) {
+      case "Identifier":
+        console.log(callee.init.name);
+        break;
+      case "CallExpression":
+        /**
+         * An object call
+         */
+        console.log(callee.init.callee.object.name, callee.init.callee.property.name);
+        break;
+      case "ArrowFunctionExpression":
+      console.log(callee.init.type, callee.init.id);
+        break;
+      case "FunctionExpression":
+      console.log(callee.init.type, callee.init.id.name);
+        break;
+      case "StringLiteral":
+      case "NumericLiteral":
+        console.log(callee.init.type, callee.init.value);
+        break;
+      default:
+        console.log(callee.init.type);
+        break;
+      }
   }
 }
