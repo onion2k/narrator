@@ -44,6 +44,9 @@ module.exports = {
   callInterogator: (callee) => {
     switch (callee.init.type) {
       case "Identifier":
+        /**
+         * A variable
+         */
         console.log(callee.init.name);
         break;
       case "CallExpression":
@@ -53,10 +56,16 @@ module.exports = {
         console.log(callee.init.callee.object.name, callee.init.callee.property.name);
         break;
       case "ArrowFunctionExpression":
-      console.log(callee.init.type, callee.init.id);
+        /**
+         * Unnamed arrow function
+         */
+        console.log(callee.init.type, callee.init.id);
         break;
       case "FunctionExpression":
-      console.log(callee.init.type, callee.init.id.name);
+        /**
+         * Named function
+         */
+        console.log(callee.init.type, callee.init.id.name);
         break;
       case "StringLiteral":
       case "NumericLiteral":
