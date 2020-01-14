@@ -47,7 +47,7 @@ const findExpressionPropTypes = (b, identifierName) => {
     });
     // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
-  return { pt: pt.properties, pd: pd.properties };
+  return { pt: pt ? pt.properties : {}, pd: pd ? pd.properties : {} };
 }
 
 const findClassPropTypes = (x) => {

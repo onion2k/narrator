@@ -47,29 +47,32 @@ module.exports = {
         /**
          * A variable
          */
-        console.log(callee.init.name);
+        console.log("Identifier :", callee.init.name);
         break;
       case "CallExpression":
         /**
          * An object call
          */
-        console.log(callee.init.callee.object.name, callee.init.callee.property.name);
+        console.log("Call :", callee.init.callee.object.name+"."+callee.init.callee.property.name);
         break;
       case "ArrowFunctionExpression":
         /**
          * Unnamed arrow function
          */
-        console.log(callee.init.type, callee.init.id);
+        console.log("ArrowFunction :", callee.init.id);
         break;
       case "FunctionExpression":
         /**
          * Named function
          */
-        console.log(callee.init.type, callee.init.id.name);
+        console.log("Function:", callee.init.id.name);
         break;
       case "StringLiteral":
       case "NumericLiteral":
-        console.log(callee.init.type, callee.init.value);
+        console.log(callee.init.type, ":", callee.init.value);
+        break;
+      case "ObjectExpression":
+        console.log("Object : ", callee.init.properties.map((prop)=>prop.key.name));
         break;
       default:
         console.log(callee.init.type);

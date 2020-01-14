@@ -5,6 +5,6 @@
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {
-    "plugins": ["jsx", "dynamicImport", "classProperties"]
+    "plugins": ["jsx", "dynamicImport", "classProperties", "exportDefaultFrom"]
   }
 }

@@ -71,18 +71,18 @@ glob(config.src, {}, function(err, files) {
           } else {
             // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
           }
-        } else {
-          const exps = Exports.evaluate(b);
-          if (exps) {
-            if (exps.length) {
-              exps.map(
-                (exp) => {
-                  callInterogator(exp.declaration.declarations[0]);
-                }
-              )
-            } else {
-              callInterogator(exps.declaration.declarations[0]);
-            }
+        }
+
+        const exps = Exports.evaluate(b);
+        if (exps) {
+          if (exps.length) {
+            exps.map(
+              (exp) => {
+                callInterogator(exp.declaration.declarations[0]);
+              }
+            )
+          } else {
+            callInterogator(exps.declaration.declarations[0]);
           }
         }
 
