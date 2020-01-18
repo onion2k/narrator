@@ -3,19 +3,23 @@ const { ExportDefault, Exports } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
 
 module.exports = {
-  report: (file, b, pt) => {
-    const exports = Exports.evaluate(b);
-    if (file.length > 100) {
-      file = file.substring(file.length - 103)
-    }
-    console.log(file.brightYellow.padEnd(100),
-      (React(b) ? "R".green.padEnd(11) : "R".red.padEnd(11)),
-      (Redux(b) ? "Rdx".green.padEnd(13) : "Rdx".red.padEnd(13)),
-      (PropTypes(b) ? "PT".green.padEnd(13) : "PT".red.padEnd(13)),
-      (ExportDefault.evaluate(b) ? "D".green.padEnd(12) : "D".red.padEnd(12)),
-      (exports ? `N: ${exports.length || 1}`.green.padEnd(16) : "N".red.padEnd(16)),
-      (Object.keys(pt).length ? `P: ${Object.keys(pt).length}`.green.padEnd(11) : "No Props".red.padEnd(11))
-    );
+  reporter: (reports) => {
+    const maxFileLength = Math.max(...reports.map(report => report.file.length));
+    reports.forEach((report) => {
+      const { file, b, pt } = report;
+      const exports = Exports.evaluate(b);
+      if (file.length > maxFileLength) {
+        file = file.substring(file.length - maxFileLength + 3)
+      }
+      console.log(file.brightYellow.padEnd(maxFileLength + 10 + 2),
+        (React(b) ? "R".green.padEnd(1 + 10 + 2) : "R".red.padEnd(1 + 10 + 2)),
+        (Redux(b) ? "Rdx".green.padEnd(3 + 10 + 2) : "Rdx".red.padEnd(3 + 10 + 2)),
+        (PropTypes(b) ? "PT".green.padEnd(2 + 10 + 2) : "PT".red.padEnd(2 + 10 + 2)),
+        (ExportDefault.evaluate(b) ? "D".green.padEnd(1 + 10 + 2) : "D".red.padEnd(1 + 10 + 2)),
+        (exports ? `N: ${exports.length || 1}`.green.padEnd(5 + 10 + 2) : "N".red.padEnd(5 + 10 + 2)),
+        (Object.keys(pt).length ? `P: ${Object.keys(pt).length}`.green.padEnd(8 + 10 + 2) : "No Props".red.padEnd(8 + 10 + 2))
+      );
+    });
   },
   def: (type, x, identifierName) => {
     if (x===null) {
