@@ -21,6 +21,13 @@ module.exports = {
         (exports ? `N: ${exports.length || 1}`.green.padEnd(5 + padding) : "N".red.padEnd(5 + padding)),
         (Object.keys(pt).length ? `P: ${Object.keys(pt).length}`.green.padEnd(8 + padding) : "No Props".red.padEnd(8 + 10 + 2))
       );
+
+      if (Object.keys(pt).length) {
+        Object.keys(pt).forEach((key)=>{
+          console.log(key, pt[key]);
+        })
+      }
+
     });
   },
   def: (type, x, identifierName) => {
@@ -48,6 +55,9 @@ module.exports = {
     }
   },
   callInterogator: (callee) => {
+
+    return;
+
     switch (callee.init.type) {
       case "Identifier":
         /**

@@ -19,10 +19,17 @@ const propTypesToObject = ({ pt, pd }) => {
           // value callee
           // console.log(prop.key.name, prop.value.callee.type)
           break;
-        
       }
-      // console.log(prop.value.property ? prop.value.property.name : prop.value.callee.object.property.name)
-      props[prop.key.name] = { type: '', value: '', required: false };
+
+      if (prop.value.object.type === 'MemberExpression') {
+        console.log(prop.value.object.object.name)
+        console.log(prop.value.object.property.name)
+        console.log(prop.value.property.name)
+      } else {
+        console.log(prop.value.object.name)
+        console.log(prop.value.property.name)
+      }
+      props[prop.key.name] = { type: prop.value.type, value: '', required: false };
     });
   }
 

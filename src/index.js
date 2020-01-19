@@ -91,7 +91,7 @@ glob(config.src, {}, function(err, files) {
 
   });
 
-  console.log("Report:");
-  reporter(reports);
+  // console.log("Report:");
+  // reporter(reports);
 
 });
