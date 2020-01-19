@@ -11,7 +11,6 @@ const { find, findExpressionPropTypes, findClassPropTypes } = require("./lib/Sea
 const { propTypesToObject } = require("./lib/propTypesToObject");
 const { declarationParamsToObject } = require('./lib/AST');
 
-
 glob(config.src, {}, function(err, files) {
   if (err) { console.log(err); }
   const reports = [];
