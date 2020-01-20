@@ -3,8 +3,10 @@ import PropTypes from "prop-types";
 
 class Example extends React.Component {
   static propTypes = {
+    selectorContent: PropTypes.thing.something.somethingelse.isRequired,
     selectorContent: PropTypes.func.isRequired,
-    content: PropTypes.string
+    content: PropTypes.string,
+    arrayOneOf: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
   };
 
   static defaultProps = {

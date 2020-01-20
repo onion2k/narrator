@@ -21,15 +21,31 @@ const propTypesToObject = ({ pt, pd }) => {
           break;
       }
 
-      if (prop.value.object.type === 'MemberExpression') {
-        console.log(prop.value.object.object.name)
-        console.log(prop.value.object.property.name)
-        console.log(prop.value.property.name)
-      } else {
-        console.log(prop.value.object.name)
-        console.log(prop.value.property.name)
+      if (prop.key.name === 'arrayOneOf') {
+
+        console.log(prop)
+
       }
-      props[prop.key.name] = { type: prop.value.type, value: '', required: false };
+
+      let obj = prop.value;
+      const chain = [];
+      while (obj.hasOwnProperty('object') || obj.hasOwnProperty('callee')) {
+        if (obj.hasOwnProperty('object')) {
+          chain.push(obj.property.name);
+          obj = obj.object;
+        } else if (obj.hasOwnProperty('callee')) {
+          chain.push(obj.callee.property.name);
+          obj = obj.callee.object;
+        }
+      }
+      if (obj.hasOwnProperty('name')) {
+        chain.push(obj.name)
+      }
+
+      console.log(chain.reverse().join('.'))
+
+      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: false };
+
     });
   }
 
