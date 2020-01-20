@@ -23,7 +23,7 @@ const propTypesToObject = ({ pt, pd }) => {
 
       if (prop.key.name === 'arrayOneOf') {
 
-        console.log(prop)
+        console.log(prop.value.arguments[0].elements)
 
       }
 
@@ -42,7 +42,7 @@ const propTypesToObject = ({ pt, pd }) => {
         chain.push(obj.name)
       }
 
-      console.log(chain.reverse().join('.'))
+      // console.log(chain.reverse().join('.'))
 
       props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: false };
 
