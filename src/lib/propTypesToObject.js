@@ -3,6 +3,27 @@ const jsonata = require("jsonata");
 const propTypesProperties = jsonata("properties");
 const defaultPropsProperties = jsonata("properties");
 
+function parsePropChain(proptype) {
+  let prop = proptype.value;
+  const chain = [];
+  while (prop.hasOwnProperty('object') || prop.hasOwnProperty('callee')) {
+    if (prop.hasOwnProperty('arguments')) {
+      console.log(proptype.value.arguments)
+    } 
+    if (prop.hasOwnProperty('object')) {
+      chain.push(prop.property.name);
+      prop = prop.object;
+    } else if (prop.hasOwnProperty('callee')) {
+      chain.push(prop.callee.property.name);
+      prop = prop.callee.object;
+    }
+  }
+  if (prop.hasOwnProperty('name')) {
+    chain.push(prop.name)
+  }
+  return chain;
+}
+
 const propTypesToObject = ({ pt, pd }) => {
 
   const propTypes = propTypesProperties.evaluate(pt);
@@ -21,28 +42,10 @@ const propTypesToObject = ({ pt, pd }) => {
           break;
       }
 
-      if (prop.key.name === 'arrayOneOf') {
 
-        console.log(prop.value.arguments[0].elements)
+      const chain = parsePropChain(prop);
 
-      }
-
-      let obj = prop.value;
-      const chain = [];
-      while (obj.hasOwnProperty('object') || obj.hasOwnProperty('callee')) {
-        if (obj.hasOwnProperty('object')) {
-          chain.push(obj.property.name);
-          obj = obj.object;
-        } else if (obj.hasOwnProperty('callee')) {
-          chain.push(obj.callee.property.name);
-          obj = obj.callee.object;
-        }
-      }
-      if (obj.hasOwnProperty('name')) {
-        chain.push(obj.name)
-      }
-
-      // console.log(chain.reverse().join('.'))
+      console.log(chain.reverse().join('.'))
 
       props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: false };
 
