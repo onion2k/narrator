@@ -4,17 +4,22 @@ const propTypesProperties = jsonata("properties");
 const defaultPropsProperties = jsonata("properties");
 
 function parsePropChain(proptype) {
-  let prop = proptype.value;
+  let prop = proptype.value || proptype;
   const chain = [];
   while (prop.hasOwnProperty('object') || prop.hasOwnProperty('callee')) {
-    if (prop.hasOwnProperty('arguments')) {
-      console.log(proptype.value.arguments)
-    } 
     if (prop.hasOwnProperty('object')) {
       chain.push(prop.property.name);
       prop = prop.object;
     } else if (prop.hasOwnProperty('callee')) {
-      chain.push(prop.callee.property.name);
+      const args = [];
+      if (prop.hasOwnProperty('arguments')) {
+        prop.arguments.forEach((arg) => {
+          arg.elements.forEach((el) => {
+            args.push(parsePropChain(el).reverse().join('.'));
+          });
+        });
+      }
+      chain.push(`${prop.callee.property.name}[${args.join(',')}]`);
       prop = prop.callee.object;
     }
   }
