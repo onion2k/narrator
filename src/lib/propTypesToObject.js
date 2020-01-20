@@ -37,23 +37,9 @@ const propTypesToObject = ({ pt, pd }) => {
   let props = {};
   if (propTypes) {
     propTypes.forEach((prop) => {
-      switch (prop.value.type) {
-        case "MemberExpression":
-          // console.log(prop.key.name, prop.value.type)
-          break;
-        case "CallExpression":
-          // value callee
-          // console.log(prop.key.name, prop.value.callee.type)
-          break;
-      }
-
-
       const chain = parsePropChain(prop);
-
       console.log(chain.reverse().join('.'))
-
       props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: false };
-
     });
   }
 
