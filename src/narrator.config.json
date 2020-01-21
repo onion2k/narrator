@@ -1,6 +1,6 @@
 {
   "src_": "./tests/*.js",
-  "src": "../structureflow/sf-web-ui/client/builder/common/builder_inplace_edit_label.js",
+  "src": "../structureflow/sf-web-ui/client/**/*.js",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

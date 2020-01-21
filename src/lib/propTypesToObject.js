@@ -25,9 +25,7 @@ function parsePropChain(proptype) {
       prop = prop.callee.object;
     }
   }
-  //if (prop.hasOwnProperty('name')) {
-    chain.push(prop.name)
-  //}
+  chain.push(prop.name)
   return chain;
 }
 
