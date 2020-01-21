@@ -9,10 +9,16 @@ class Example extends React.Component {
     arrayOneOf: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     either: PropTypes.object || PropTypes.bool, // Not really valid but detectable...
     slow: PropTypes.array.isRequired,
+    defobj: PropTypes.object,
   };
 
   static defaultProps = {
-    content: "Default content"
+    content: "Default content",
+    defobj: {
+      key1: 'string',
+      key2: 123,
+      key3: []
+    }
   };
 
   shouldComponentUpdate(nextProps) {

@@ -25,7 +25,11 @@ module.exports = {
       if (Object.keys(pt).length) {
         Object.keys(pt).forEach((key)=>{
           const type = pt[key].type.string || '';
-          console.log(pt[key].required ? key.brightGreen.padEnd(30) : key.green.padEnd(30), pt[key].required ? type.brightWhite : type.white );
+          console.log(
+            pt[key].required ? key.brightGreen.padEnd(60) : key.green.padEnd(60),
+            pt[key].required ? type.brightWhite.padEnd(60) : type.white.padEnd(60),
+            typeof pt[key].value === 'object' ? 'Object' : pt[key].value
+          );
         })
       }
 
