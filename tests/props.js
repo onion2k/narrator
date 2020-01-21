@@ -6,7 +6,9 @@ class Example extends React.Component {
     selectorContent: PropTypes.thing.something.somethingelse.isRequired,
     selectorContent: PropTypes.func.isRequired,
     content: PropTypes.string,
-    arrayOneOf: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+    arrayOneOf: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    either: PropTypes.object || PropTypes.bool, // Not really valid but detectable...
+    slow: PropTypes.array.isRequired,
   };
 
   static defaultProps = {

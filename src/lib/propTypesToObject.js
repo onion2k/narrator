@@ -14,9 +14,11 @@ function parsePropChain(proptype) {
       const args = [];
       if (prop.hasOwnProperty('arguments')) {
         prop.arguments.forEach((arg) => {
-          arg.elements.forEach((el) => {
-            args.push(parsePropChain(el).reverse().join('.'));
-          });
+          if (arg.hasOwnProperty('elements')) {
+            arg.elements.forEach((el) => {
+              args.push(parsePropChain(el).reverse().join('.'));
+            });  
+          } 
         });
       }
       chain.push(`${prop.callee.property.name}[${args.join(',')}]`);
@@ -38,8 +40,7 @@ const propTypesToObject = ({ pt, pd }) => {
   if (propTypes) {
     propTypes.forEach((prop) => {
       const chain = parsePropChain(prop);
-      console.log(chain.reverse().join('.'))
-      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: false };
+      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: chain[0]==='isRequired' };
     });
   }
 

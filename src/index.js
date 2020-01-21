@@ -79,11 +79,11 @@ glob(config.src, {}, function(err, files) {
       if (exps.length) {
         exps.map(
           (exp) => {
-            callInterogator(exp.declaration.declarations[0]);
+            // callInterogator(exp.declaration.declarations[0]);
           }
         )
       } else {
-        callInterogator(exps.declaration.declarations[0]);
+        // callInterogator(exps.declaration.declarations[0]);
       }
     }
 
@@ -91,7 +91,7 @@ glob(config.src, {}, function(err, files) {
 
   });
 
-  // console.log("Report:");
-  // reporter(reports);
+  console.log("Report:");
+  reporter(reports);
 
 });
