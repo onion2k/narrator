@@ -14,12 +14,12 @@ module.exports = {
         file = file.substring(file.length - maxFileLength + 3)
       }
       console.log(file.brightYellow.padEnd(maxFileLength + padding),
-        (React(b) ? "R".green.padEnd(1 + padding) : "R".red.padEnd(1 + padding)),
+        (React(b) ? "React".green.padEnd(5 + padding) : "React".red.padEnd(5 + padding)),
         (Redux(b) ? "Rdx".green.padEnd(3 + padding) : "Rdx".red.padEnd(3 + padding)),
-        (PropTypes(b) ? "PT".green.padEnd(2 + padding) : "PT".red.padEnd(2 + padding)),
-        (ExportDefault.evaluate(b) ? "D".green.padEnd(1 + padding) : "D".red.padEnd(1 + padding)),
-        (exports ? `N: ${exports.length || 1}`.green.padEnd(5 + padding) : "N".red.padEnd(5 + padding)),
-        (Object.keys(pt).length ? `P: ${Object.keys(pt).length}`.green.padEnd(8 + padding) : "No Props".red.padEnd(8 + 10 + 2))
+        (PropTypes(b) ? "PropTypes".green.padEnd(9 + padding) : "PropTypes".red.padEnd(9 + padding)),
+        (ExportDefault.evaluate(b) ? "Default".green.padEnd(7 + padding) : "Default".red.padEnd(7 + padding)),
+        (exports ? `Named: ${exports.length || 1}`.green.padEnd(9 + padding) : "Named".red.padEnd(9 + padding)),
+        (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.green.padEnd(12 + padding) : "No Props".red.padEnd(12 + padding))
       );
 
       if (Object.keys(pt).length) {

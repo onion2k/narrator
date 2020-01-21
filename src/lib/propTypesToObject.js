@@ -54,9 +54,13 @@ const propTypesToObject = ({ pt, pd }) => {
           // This should recursively return object values based on types
           props[prop.key.name].value = prop.value.properties.reduce((i, element) => { i[element.key.name] = element.value.value;  return i;  }, {});
           break;
+        case "Identifier":
+          props[prop.key.name].value =  "Identifier: "+prop.value.name;
+          break;
         case "StringLiteral":
         case "NumericLiteral":
-          props[prop.key.name].value = prop.value.value;
+        case "BooleanLiteral":
+            props[prop.key.name].value = prop.value.value;
           break;
       }
     });  
