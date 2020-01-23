@@ -1,4 +1,5 @@
 const jsonata = require("jsonata");
+const { find } = require("../lib/SearchAST.js");
 
 const propTypesProperties = jsonata("properties");
 const defaultPropsProperties = jsonata("properties");
@@ -29,7 +30,7 @@ function parsePropChain(proptype) {
   return chain;
 }
 
-const propTypesToObject = ({ pt, pd }) => {
+const propTypesToObject = ({ pt, pd }, b) => {
 
   const propTypes = propTypesProperties.evaluate(pt);
   const defaultProps = defaultPropsProperties.evaluate(pd);
@@ -44,6 +45,7 @@ const propTypesToObject = ({ pt, pd }) => {
 
   if (defaultProps) {
     defaultProps.forEach((prop) => {
+
       switch (prop.value.type) {
         case "ArrayExpression":
           props[prop.key.name].value = prop.value.elements.map(element => element.value);
@@ -60,7 +62,16 @@ const propTypesToObject = ({ pt, pd }) => {
           }
           break;
         case "Identifier":
-          props[prop.key.name].value =  "func: "+prop.value.name;
+          const x = find(b, prop.key.name)
+          console.log(prop.key.name, x.type)
+          switch (x.type) {
+            case "ImportDeclaration":
+              props[prop.key.name].value = prop.value.name+' from '+x.source.value;
+              break;
+            case "FunctionDeclaration":
+              props[prop.key.name].value = prop.value.name+' from line '+x.id.start;
+              break;  
+            }
           break;
         case "StringLiteral":
           props[prop.key.name].value = prop.value.value || "''";

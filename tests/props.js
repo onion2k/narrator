@@ -1,6 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import jsonata from "jsonata";
+
+import { namedFunc } from "./funcs"
+import defaultFunc from "./funcs"
+
+function myfunc() {}
+
 class Example extends React.Component {
   static propTypes = {
     selectorContent: PropTypes.thing.something.somethingelse.isRequired,
@@ -10,6 +17,10 @@ class Example extends React.Component {
     either: PropTypes.object || PropTypes.bool, // Not really valid but detectable...
     slow: PropTypes.array.isRequired,
     defobj: PropTypes.object,
+    namedFunc: PropTypes.func,
+    defaultFunc: PropTypes.func,
+    jsonata: PropTypes.func,
+    myfunc: PropTypes.func,
   };
 
   static defaultProps = {
@@ -17,8 +28,12 @@ class Example extends React.Component {
     defobj: {
       key1: 'string',
       key2: 123,
-      key3: []
-    }
+      key3: [],
+    },
+    namedFunc,
+    defaultFunc,
+    jsonata,
+    myfunc
   };
 
   shouldComponentUpdate(nextProps) {

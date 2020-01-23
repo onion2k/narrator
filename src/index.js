@@ -37,9 +37,9 @@ glob(config.src, {}, function(err, files) {
           def("Export Def I", x, identifierName)
           if (x.type === "ClassDeclaration") {
             // proptypes might be defined as external expression statements
-            pt = propTypesToObject(findClassPropTypes(x, identifierName));
+            pt = propTypesToObject(findClassPropTypes(x, identifierName), b);
             if (!Object.keys(pt).length) {
-              pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+              pt = propTypesToObject(findExpressionPropTypes(b, identifierName), b);
             }
           } else if (x.type === "VariableDeclaration") {
             pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
@@ -66,9 +66,7 @@ glob(config.src, {}, function(err, files) {
           }
         }
       } else if (exportDefault.declaration.type === "FunctionDeclaration") {
-        // console.log("Export Default".padEnd(15), "(SFC)", exportDefault.declaration.id.name );
         pt = declarationParamsToObject(exportDefault.declaration);
-        // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
       } else {
         // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
       }

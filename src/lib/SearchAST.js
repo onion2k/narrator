@@ -1,5 +1,7 @@
 const jsonata = require("jsonata");
 
+const findImportByName = jsonata("program.body[type='ImportDeclaration'][**[name=$identifierName]]");
+const findFunctionByName = jsonata("program.body[type='FunctionDeclaration'][**[name=$identifierName]]");
 const findClassByName = jsonata("program.body[type='ClassDeclaration'][**[name=$identifierName]]");
 const findVariableByName =  jsonata("program.body[type='VariableDeclaration'][**[name=$identifierName]]");
 const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$classProperty].value");
@@ -8,9 +10,11 @@ const findExpressionsByLeftIdentifierName = jsonata("program.body[type='Expressi
 const { declarationParamsToObject } = require('./AST')
 
 const find = (b, identifierName) => {
+  const i = findImportByName.evaluate(b, { identifierName });
+  const f = findFunctionByName.evaluate(b, { identifierName });
   const c = findClassByName.evaluate(b, { identifierName });
   const v = findVariableByName.evaluate(b, { identifierName });
-  return c || v || null;
+  return i || f || c || v || null;
 }
 
 const findExpressionPropTypes = (b, identifierName) => {
