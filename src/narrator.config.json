@@ -1,6 +1,6 @@
 {
-  "src_": "./tests/props*.js",
-  "src": "../structureflow/sf-web-ui/client/**/*.js",
+  "src": "./tests/*.js",
+  "src_": "../structureflow/sf-web-ui/client/**/*.js",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

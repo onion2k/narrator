@@ -2,6 +2,8 @@ const fs = require("fs");
 const glob = require("glob");
 require("colors");
 const { reporter, def, callInterogator } = require("./reporting");
+const { writeToTest } = require("./output");
+
 const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
@@ -91,7 +93,8 @@ try {
     });
 
     console.log("Report:");
-    reporter(reports);
+    // reporter(reports);
+    writeToTest(reports);
 
   })
 } catch(error) {

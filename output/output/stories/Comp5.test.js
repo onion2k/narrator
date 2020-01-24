@@ -3,18 +3,18 @@ import React from 'react'
 import { render, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
 
-import <%= as; %> from '<%= file; %>'
+import asComp from './tests/mulitple_exports.js'
 
 afterEach(cleanup)
 
-test('<%= as; %> renders correctly', async () => {
+test('asComp renders correctly', async () => {
   const props = {
-<%- props; %>
+Props
   }
 
   const { container } = render(
       <svg>
-        <<%= component %> {...props} />
+        <Comp5 {...props} />
       </svg>,
   )
   expect(container).toBeVisible()
