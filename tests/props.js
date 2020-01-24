@@ -21,6 +21,7 @@ class Example extends React.Component {
     defaultFunc: PropTypes.func,
     jsonata: PropTypes.func,
     myfunc: PropTypes.func,
+    jsfunc: PropTypes.func,
   };
 
   static defaultProps = {
@@ -33,7 +34,8 @@ class Example extends React.Component {
     namedFunc,
     defaultFunc,
     jsonata,
-    myfunc
+    myfunc,
+    jsfunc: Math.random
   };
 
   shouldComponentUpdate(nextProps) {

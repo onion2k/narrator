@@ -45,7 +45,6 @@ const propTypesToObject = ({ pt, pd }, b) => {
 
   if (defaultProps) {
     defaultProps.forEach((prop) => {
-
       switch (prop.value.type) {
         case "ArrayExpression":
           props[prop.key.name].value = prop.value.elements.map(element => element.value);
@@ -60,6 +59,9 @@ const propTypesToObject = ({ pt, pd }, b) => {
           } else {
             props[prop.key.name].value =  "null";
           }
+          break;
+        case "MemberExpression":
+          props[prop.key.name].value = prop.value.object.name+'.'+prop.value.property.name;
           break;
         case "Identifier":
           const x = find(b, prop.key.name)
