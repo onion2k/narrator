@@ -7,26 +7,36 @@ const defaultPropsProperties = jsonata("properties");
 function parsePropChain(proptype) {
   let prop = proptype.value || proptype;
   const chain = [];
-  while (prop.hasOwnProperty('object') || prop.hasOwnProperty('callee')) {
-    if (prop.hasOwnProperty('object')) {
-      chain.push(prop.property.name);
-      prop = prop.object;
-    } else if (prop.hasOwnProperty('callee')) {
-      const args = [];
-      if (prop.hasOwnProperty('arguments')) {
-        prop.arguments.forEach((arg) => {
-          if (arg.hasOwnProperty('elements')) {
-            arg.elements.forEach((el) => {
-              args.push(parsePropChain(el).reverse().join('.'));
-            });  
-          } 
-        });
+  try {
+    if (typeof prop === 'object' && prop !== null) {
+      while (prop.hasOwnProperty('object') || prop.hasOwnProperty('callee')) {
+        if (prop.hasOwnProperty('object')) {
+          chain.push(prop.property.name);
+          prop = prop.object;
+        } else if (prop.hasOwnProperty('callee')) {
+          const args = [];
+          if (prop.hasOwnProperty('arguments')) {
+            prop.arguments.forEach((arg) => {
+              if (arg.hasOwnProperty('elements')) {
+                arg.elements.forEach((el) => {
+                  args.push(parsePropChain(el).reverse().join('.'));
+                });  
+              } 
+            });
+          }
+            if (prop.callee.hasOwnProperty("property")) {
+              chain.push(`${prop.callee.property.name}[${args.join(',')}]`);
+            } else {
+              chain.push(`${prop.callee.name}[${args.join(',')}]`);
+            }
+          prop = prop.callee.object;
+        }
       }
-      chain.push(`${prop.callee.property.name}[${args.join(',')}]`);
-      prop = prop.callee.object;
+      chain.push(prop.name)
     }
+  } catch(e) {
+    process.exit(1);
   }
-  chain.push(prop.name)
   return chain;
 }
 
@@ -50,7 +60,6 @@ const propTypesToObject = ({ pt, pd }, b) => {
           props[prop.key.name].value = prop.value.elements.map(element => element.value);
           break;
         case "ObjectExpression":
-          // This should recursively return object values based on types
           props[prop.key.name].value = prop.value.properties.reduce((i, element) => { i[element.key.name] = element.value.value;  return i;  }, {});
           break;
         case "NullLiteral":
@@ -65,15 +74,19 @@ const propTypesToObject = ({ pt, pd }, b) => {
           break;
         case "Identifier":
           const x = find(b, prop.key.name)
-          console.log(prop.key.name, x.type)
-          switch (x.type) {
-            case "ImportDeclaration":
-              props[prop.key.name].value = prop.value.name+' from '+x.source.value;
-              break;
-            case "FunctionDeclaration":
-              props[prop.key.name].value = prop.value.name+' from line '+x.id.start;
-              break;  
-            }
+          // console.log(prop.key.name, x.type)
+          if (typeof x === 'object' && x !== null) {
+            switch (x.type) {
+              case "ImportDeclaration":
+                props[prop.key.name].value = prop.value.name+' from '+x.source.value;
+                break;
+              case "FunctionDeclaration":
+                props[prop.key.name].value = prop.value.name+' from line '+x.id.start;
+                break;
+              }  
+          } else {
+            console.log("Identifier is null");
+          }
           break;
         case "StringLiteral":
           props[prop.key.name].value = prop.value.value || "''";

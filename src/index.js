@@ -38,10 +38,14 @@ glob(config.src, {}, function(err, files) {
             // proptypes might be defined as external expression statements
             pt = propTypesToObject(findClassPropTypes(x, identifierName), b);
             if (!Object.keys(pt).length) {
-              pt = propTypesToObject(findExpressionPropTypes(b, identifierName), b);
+              if (identifierName) {
+                pt = propTypesToObject(findExpressionPropTypes(b, identifierName), b);
+              }
             }
           } else if (x.type === "VariableDeclaration") {
-            pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+            if (identifierName) {
+              pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
+            }
           }
           // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
         } catch(error) {
@@ -57,10 +61,8 @@ glob(config.src, {}, function(err, files) {
           if (x !== null) {
             if (x.type === "ClassDeclaration") {
               pt = propTypesToObject(findClassPropTypes(x));
-              // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
             } else if (x.type === "VariableDeclaration") {
-              pt = propTypesToObject(findExpressionPropTypes(x));
-              // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
+              pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
             }
           }
         }
@@ -88,7 +90,7 @@ glob(config.src, {}, function(err, files) {
 
   });
 
-  console.log("Report:");
-  reporter(reports);
+  // console.log("Report:");
+  // reporter(reports);
 
 });

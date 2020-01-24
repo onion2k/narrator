@@ -19,7 +19,7 @@ const findExpressionPropTypes = (b, identifierName) => {
   let pt = {};
   let pd = {};
 
-  if (!identifierName) { console.log('Missing ID'); return { pt, pd }; }
+  if (!identifierName) { console.log('Missing ID: ',identifierName); return { pt, pd }; }
 
   if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
     const expressions = findExpressionsByLeftIdentifierName.evaluate(b, { identifierName });
