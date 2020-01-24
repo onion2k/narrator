@@ -7,9 +7,8 @@ const babelParser = require("@babel/parser");
 const config = require("./narrator.config.json");
 
 const { Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
-const { find, findExpressionPropTypes, findClassPropTypes } = require("./lib/SearchAST.js");
+const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./lib/AST");
 const { propTypesToObject } = require("./lib/propTypesToObject");
-const { declarationParamsToObject } = require('./lib/AST');
 
 glob(config.src, {}, function(err, files) {
   if (err) { console.log(err); }

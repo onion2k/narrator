@@ -1,5 +1,5 @@
 const jsonata = require("jsonata");
-const { find } = require("../lib/SearchAST.js");
+const { find } = require("../lib/AST.js");
 
 const propTypesProperties = jsonata("properties");
 const defaultPropsProperties = jsonata("properties");

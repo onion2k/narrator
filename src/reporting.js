@@ -2,7 +2,7 @@ require("colors");
 const { ExportDefault, Exports } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
 
-const padding = 12; // 10 for colors + 2 spaces
+const padding = 5;
 
 module.exports = {
   reporter: (reports) => {
@@ -14,20 +14,20 @@ module.exports = {
         file = file.substring(file.length - maxFileLength + 3)
       }
       console.log(file.brightYellow.padEnd(maxFileLength + padding),
-        (React(b) ? "React".green.padEnd(5 + padding) : "React".red.padEnd(5 + padding)),
-        (Redux(b) ? "Rdx".green.padEnd(3 + padding) : "Rdx".red.padEnd(3 + padding)),
-        (PropTypes(b) ? "PropTypes".green.padEnd(9 + padding) : "PropTypes".red.padEnd(9 + padding)),
-        (ExportDefault.evaluate(b) ? "Default".green.padEnd(7 + padding) : "Default".red.padEnd(7 + padding)),
-        (exports ? `Named: ${exports.length || 1}`.green.padEnd(9 + padding) : "Named".red.padEnd(9 + padding)),
-        (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.green.padEnd(12 + padding) : "No Props".red.padEnd(12 + padding))
+        (React(b) ? "React".padEnd(5 + padding).green : "React".padEnd(5 + padding).red),
+        (Redux(b) ? "Rdx".padEnd(3 + padding).green : "Rdx".padEnd(3 + padding).red),
+        (PropTypes(b) ? "PropTypes".padEnd(9 + padding).green : "PropTypes".padEnd(9 + padding).red),
+        (ExportDefault.evaluate(b) ? "Default".padEnd(7 + padding).green : "Default".padEnd(7 + padding).red),
+        (exports ? `Named: ${exports.length || 1}`.padEnd(9 + padding).green : "Named".padEnd(9 + padding).red),
+        (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.padEnd(12 + padding).green : "No Props".padEnd(12 + padding).red)
       );
 
       if (Object.keys(pt).length) {
         Object.keys(pt).forEach((key)=>{
           const type = pt[key].type.string || '';
           console.log(
-            pt[key].required ? key.brightGreen.padEnd(60) : key.green.padEnd(60),
-            pt[key].required ? type.brightWhite.padEnd(60) : type.white.padEnd(60),
+            pt[key].required ? key.padEnd(60).brightGreen : key.padEnd(60).green,
+            pt[key].required ? type.padEnd(60).brightWhite : type.padEnd(60).white,
             typeof pt[key].value === 'object' ? 'Object' : pt[key].value
           );
         })
