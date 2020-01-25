@@ -93,8 +93,8 @@ try {
     });
 
     console.log("Report:");
-    // reporter(reports);
-    writeToTest(reports);
+    reporter(reports);
+    // writeToTest(reports);
 
   })
 } catch(error) {

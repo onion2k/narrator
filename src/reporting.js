@@ -4,6 +4,19 @@ const { React, Redux, PropTypes } = require("./lib/Imports");
 
 const padding = 5;
 
+function clipper(str, percent) {
+  if (typeof str !== 'string') return "";
+
+  const termWidth = process.stdout.columns;
+  const width = Math.floor(termWidth / 100 * percent);
+
+  if (str.length > width) {
+    return str.toString().substring(0, width);
+  } else {
+    return str.toString().padEnd(width);
+  }
+}
+
 module.exports = {
   reporter: (reports) => {
     const maxFileLength = Math.max(...reports.map(report => report.file.length));
@@ -13,22 +26,25 @@ module.exports = {
       if (file.length > maxFileLength) {
         file = file.substring(file.length - maxFileLength + 3)
       }
-      console.log(file.brightYellow.padEnd(maxFileLength + padding),
-        (React(b) ? "React".padEnd(5 + padding).green : "React".padEnd(5 + padding).red),
-        (Redux(b) ? "Rdx".padEnd(3 + padding).green : "Rdx".padEnd(3 + padding).red),
-        (PropTypes(b) ? "PropTypes".padEnd(9 + padding).green : "PropTypes".padEnd(9 + padding).red),
-        (ExportDefault.evaluate(b) ? "Default".padEnd(7 + padding).green : "Default".padEnd(7 + padding).red),
-        (exports ? `Named: ${exports.length || 1}`.padEnd(9 + padding).green : "Named".padEnd(9 + padding).red),
-        (Object.keys(pt).length ? `Props: ${Object.keys(pt).length}`.padEnd(12 + padding).green : "No Props".padEnd(12 + padding).red)
+      console.log(clipper(file, 50).brightYellow,
+        (React(b) ? clipper("Rct", 3).green : clipper("Rct", 3).red),
+        (Redux(b) ? clipper("Rdx", 3).green : clipper("Rdx", 3).red),
+        (PropTypes(b) ? clipper("Props", 6).green : clipper("Props", 6).red),
+        (ExportDefault.evaluate(b) ? clipper("Def", 8).green : clipper("Def", 8).red),
+        (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("Named", 10).red),
+        (Object.keys(pt).length ? clipper(`Props: ${Object.keys(pt).length}`, 10).green : clipper("No Props", 10).red)
       );
 
       if (Object.keys(pt).length) {
-        Object.keys(pt).forEach((key)=>{
+        const propCount = Object.keys(pt).length;
+        Object.keys(pt).forEach((key, index)=>{
           const type = pt[key].type.string || '';
+          const connector = index===0 ? "┌" : index===propCount-1 ? "└" : "│";
           console.log(
-            pt[key].required ? key.padEnd(60).brightGreen : key.padEnd(60).green,
-            pt[key].required ? type.padEnd(60).brightWhite : type.padEnd(60).white,
-            typeof pt[key].value === 'object' ? 'Object' : pt[key].value
+            connector,
+            pt[key].required ? clipper(key, 17).brightGreen : clipper(key, 17).green,
+            pt[key].required ? clipper(type, 30).brightWhite : clipper(type, 30).white,
+            typeof pt[key].value === 'object' ? clipper('Object', 50) : clipper(pt[key].value, 50),
           );
         })
       }

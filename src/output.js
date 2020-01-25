@@ -31,7 +31,7 @@ module.exports = {
           if (error) {
             console.log(error);
           }
-          write("test", "output/stories", file, "Comp" + index, result);
+          write("test", "tests", file, "Comp" + index, result);
         }
       );
 
