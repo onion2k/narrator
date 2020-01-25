@@ -42,7 +42,7 @@ module.exports = {
           const connector = index===0 ? "┌" : index===propCount-1 ? "└" : "│";
           console.log(
             connector,
-            pt[key].required ? clipper(key, 17).brightGreen : clipper(key, 17).green,
+            pt[key].required ? clipper(key, 16).brightGreen : clipper(key, 16).green,
             pt[key].required ? clipper(type, 30).brightWhite : clipper(type, 30).white,
             typeof pt[key].value === 'object' ? clipper('Object', 50) : clipper(pt[key].value, 50),
           );
