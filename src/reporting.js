@@ -27,11 +27,11 @@ module.exports = {
         file = file.substring(file.length - maxFileLength + 3)
       }
       console.log(clipper(file, 50).brightYellow,
-        (React(b) ? clipper("Rct", 3).green : clipper("Rct", 3).red),
-        (Redux(b) ? clipper("Rdx", 3).green : clipper("Rdx", 3).red),
-        (PropTypes(b) ? clipper("Props", 6).green : clipper("Props", 6).red),
-        (ExportDefault.evaluate(b) ? clipper("Def", 8).green : clipper("Def", 8).red),
-        (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("Named", 10).red),
+        (React(b) ? clipper("Rct", 4).green : clipper("Rct", 4).red),
+        (Redux(b) ? clipper("Rdx", 4).green : clipper("Rdx", 4).red),
+        (PropTypes(b) ? clipper("PTs", 4).green : clipper("PTs", 4).red),
+        (ExportDefault.evaluate(b) ? clipper("Def", 4).green : clipper("Def", 4).red),
+        (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("No Named", 10).red),
         (Object.keys(pt).length ? clipper(`Props: ${Object.keys(pt).length}`, 10).green : clipper("No Props", 10).red)
       );
 

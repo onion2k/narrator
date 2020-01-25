@@ -12,7 +12,7 @@ const { Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Ex
 const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./lib/AST");
 const { propTypesToObject } = require("./lib/propTypesToObject");
 try {
-  glob(config.src, {}, function(err, files) {
+  glob(config.src+'**/*.js', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -88,7 +88,7 @@ try {
         }
       }
 
-      reports.push({ file, b, pt })
+      reports.push({ file: './<src>/'+file.replace(config.src, ''), b, pt })
 
     });
 
