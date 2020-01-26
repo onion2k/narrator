@@ -1,15 +1,31 @@
 const path = require('path');
 const fse = require('fs-extra');
 const ejs = require("ejs");
-const { ExportDefault, Exports } = require("./lib/Extractors");
-const { React, Redux, PropTypes } = require("./lib/Imports");
-const config = require("./narrator.config.json");
+const { Redux } = require("./lib/Imports");
 
 const write = function(type, dir, file, name, content) {
   return fse.outputFile(`./output/${dir}/${path.basename(file, '.js')}.${type}.js`, content).then(e => {
       console.log(file, ":", `./output/${dir}/${path.basename(file, '.js')}.${type}.js`);
     });
 };
+
+const propTypeDefs = {
+  'string': '"Test String"',
+  'number': '1234',
+  'func': '() => {}',
+  'array': '["Test Array 1", "Test Array 2", "Test Array 3"]',
+  'object': "{}",
+}
+
+const propsToTestProps = function(pt) {
+  return Object.entries(pt).map(([key, value]) => {
+    console.log(value)
+
+    return value.required
+      ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${value.type.string}` 
+      : `    // ${key}: ${value.value || "''"}, //${value.type.string}`;
+  }).join('\n')
+}
 
 module.exports = {
   writeToTest: (reports) => {
@@ -24,7 +40,7 @@ module.exports = {
           file: file,
           component: name,
           as: name,
-          props: Object.entries(pt).map(([key, value])=>{ return `    ${key}: ${value.value || "''"}, //${value.type.string}`}).join('\n')
+          props: propsToTestProps(pt)
         },
         {
           debug: false,

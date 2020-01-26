@@ -54,7 +54,9 @@ const propTypesToObject = ({ pt, pd }, b, file=null) => {
   if (propTypes) {
     propTypes.forEach((prop) => {
       const chain = parsePropChain(prop);
-      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.reverse().join('.'), array: chain.reverse() }, required: chain[0]==='isRequired' };
+      const required = chain[0] === 'isRequired';
+      chain.reverse();
+      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.join('.'), chain: chain }, required };
     });
   }
 
