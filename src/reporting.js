@@ -1,8 +1,7 @@
 require("colors");
 const { ExportDefault, Exports } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
-
-const padding = 5;
+const config = require("./narrator.config.json");
 
 function clipper(str, percent) {
   if (typeof str !== 'string') return "";
@@ -21,12 +20,14 @@ module.exports = {
   reporter: (reports) => {
     const maxFileLength = Math.max(...reports.map(report => report.file.length));
     reports.forEach((report) => {
-      const { file, b, pt } = report;
+      const { name, file, b, pt } = report;
+
+      const srcfile = './<src>/'+file.replace(config.src, '');
+
       const exports = Exports.evaluate(b);
-      if (file.length > maxFileLength) {
-        file = file.substring(file.length - maxFileLength + 3)
-      }
-      console.log(clipper(file, 50).brightYellow,
+
+      console.log("File: ", srcfile.brightWhite)
+      console.log(clipper("Component: "+name, 50).brightYellow,
         (React(b) ? clipper("Rct", 4).green : clipper("Rct", 4).red),
         (Redux(b) ? clipper("Rdx", 4).green : clipper("Rdx", 4).red),
         (PropTypes(b) ? clipper("PTs", 4).green : clipper("PTs", 4).red),

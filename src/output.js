@@ -1,18 +1,20 @@
+const path = require('path');
 const fse = require('fs-extra');
 const ejs = require("ejs");
 const { ExportDefault, Exports } = require("./lib/Extractors");
 const { React, Redux, PropTypes } = require("./lib/Imports");
+const config = require("./narrator.config.json");
 
 const write = function(type, dir, file, name, content) {
-  return fse.outputFile(`./output/${dir}/${name}.${type}.js`, content).then(e => {
-      console.log(file, ":", name);
+  return fse.outputFile(`./output/${dir}/${path.basename(file, '.js')}.${type}.js`, content).then(e => {
+      console.log(file, ":", `./output/${dir}/${path.basename(file, '.js')}.${type}.js`);
     });
 };
 
 module.exports = {
   writeToTest: (reports) => {
     reports.forEach((report, index) => {
-      const { file, b, pt } = report;
+      const { name, file, b, pt } = report;
 
       const template = Redux(b) ? "./src/templates/test_redux.ejs" : "./src/templates/test_default.ejs";
 
@@ -20,8 +22,8 @@ module.exports = {
         template,
         {
           file: file,
-          component: "Comp" + index,
-          as: "asComp",
+          component: name,
+          as: name,
           props: "Props"
         },
         {
@@ -31,7 +33,7 @@ module.exports = {
           if (error) {
             console.log(error);
           }
-          write("test", "tests", file, "Comp" + index, result);
+          write("test", "tests", file, name, result);
         }
       );
 

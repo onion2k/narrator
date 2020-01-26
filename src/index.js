@@ -49,13 +49,14 @@ try {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
             }
-            // console.log("Props".padEnd(15), JSON.stringify(pt, null, 2));
           } catch(error) {
             console.log(error);
           }
+
+          reports.push({ name: identifierName, file, b, pt })
+
         } else if (exportDefault.declaration.type === "CallExpression") {
           const CallExpressionName = CalleeName.evaluate(exportDefault);
-          // console.log("Export Def CE".padEnd(15), "(Function)", CallExpressionName ? CallExpressionName.padStart(5) : "Anonymous" );
           if (CalleeName.evaluate(exportDefault) === 'connect') {
             const identifierName = exportDefault.declaration.arguments[0].name;
             const x = find(b, identifierName);
@@ -67,9 +68,12 @@ try {
                 pt = propTypesToObject(findExpressionPropTypes(b, identifierName));
               }
             }
+            reports.push({ name: identifierName, file, b, pt })
           }
         } else if (exportDefault.declaration.type === "FunctionDeclaration") {
+          const identifierName = exportDefault.declaration.id ? exportDefault.declaration.id.name : "Anon";
           pt = declarationParamsToObject(exportDefault.declaration);
+          reports.push({ name: identifierName, file, b, pt })
         } else {
           // console.log("Export Default".padEnd(15), "(Something Else)", exportDefault.declaration.type );
         }
@@ -88,13 +92,11 @@ try {
         }
       }
 
-      reports.push({ file: './<src>/'+file.replace(config.src, ''), b, pt })
-
     });
 
     console.log("Report:");
     reporter(reports);
-    // writeToTest(reports);
+    writeToTest(reports);
 
   })
 } catch(error) {
