@@ -24,7 +24,7 @@ module.exports = {
           file: file,
           component: name,
           as: name,
-          props: "Props"
+          props: Object.entries(pt).map(([key, value])=>{ return `    ${key}: ${value.value || "''"}, //${value.type.string}`}).join('\n')
         },
         {
           debug: false,
