@@ -38,14 +38,17 @@ module.exports = {
 
       if (Object.keys(pt).length) {
         const propCount = Object.keys(pt).length;
-        Object.keys(pt).forEach((key, index)=>{
-          const type = pt[key].type.string || '';
+        const sortedPt = Object.entries(pt).sort((a, b) => {
+          return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1
+        });
+        sortedPt.forEach((prop, index)=>{
+          const type = prop[1].type.string || '';
           const connector = index===0 ? "┌" : index===propCount-1 ? "└" : "│";
           console.log(
             connector,
-            pt[key].required ? clipper(key, 16).brightGreen : clipper(key, 16).green,
-            pt[key].required ? clipper(type, 30).brightWhite : clipper(type, 30).white,
-            typeof pt[key].value === 'object' ? clipper('Object', 50) : clipper(pt[key].value, 50),
+            prop[1].required ? clipper(prop[0], 16).brightGreen : clipper(prop[0], 16).green,
+            prop[1].required ? clipper(prop[1].type.string, 30).brightWhite : clipper(prop[1].type.string, 30).white,
+            typeof prop[1].value === 'object' ? clipper('Object', 50) : clipper(prop[1].value, 50),
           );
         })
       }
