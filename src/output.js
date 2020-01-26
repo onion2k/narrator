@@ -5,8 +5,8 @@ const { Redux } = require("./lib/Imports");
 
 const write = function(type, dir, file, name, content) {
   return fse.outputFile(`./output/${dir}/${path.basename(file, '.js')}.${type}.js`, content).then(e => {
-      console.log(file, ":", `./output/${dir}/${path.basename(file, '.js')}.${type}.js`);
-    });
+    console.log(`Wrote ./output/${dir}/${path.basename(file, '.js')}.${type}.js`);
+  });
 };
 
 const propTypeDefs = {
@@ -18,11 +18,14 @@ const propTypeDefs = {
 }
 
 const propsToTestProps = function(pt) {
-  return Object.entries(pt).map(([key, value]) => {
+  const sortedPt = Object.entries(pt).sort((a, b) => {
+    return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1
+  });
+  return sortedPt.map(([key, value]) => {
     return value.required
       ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${value.type.string}` 
       : `    // ${key}: ${value.value || "''"}, //${value.type.string}`;
-  }).join('\n')
+  }).join('\n');
 }
 
 module.exports = {
