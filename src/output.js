@@ -19,8 +19,6 @@ const propTypeDefs = {
 
 const propsToTestProps = function(pt) {
   return Object.entries(pt).map(([key, value]) => {
-    console.log(value)
-
     return value.required
       ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${value.type.string}` 
       : `    // ${key}: ${value.value || "''"}, //${value.type.string}`;
