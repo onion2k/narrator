@@ -47,7 +47,7 @@ module.exports = {
           console.log(
             connector,
             prop[1].required ? clipper(prop[0], 16).brightGreen : clipper(prop[0], 16).green,
-            prop[1].required ? clipper(prop[1].type.string, 30).brightWhite : clipper(prop[1].type.string, 30).white,
+            prop[1].required ? clipper(type, 30).brightWhite : clipper(type, 30).white,
             typeof prop[1].value === 'object' ? clipper('Object', 50) : clipper(prop[1].value, 50),
           );
         })
