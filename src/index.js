@@ -87,15 +87,15 @@ try {
           (exp) => {
             if (exp.declaration.hasOwnProperty('declarations')) {
               exp.declaration.declarations.forEach((dec) => {
-                console.log(dec.id.name)
+                console.log("dec:", dec.id.name, dec.init.type)
               });
             } else {
-              console.log(exp.declaration.id.name)
+              const dec = exp.declaration;
+              console.log("dec:", dec.id.name, dec.type)
             }
           }
         )
       }
-
 
     });
 
