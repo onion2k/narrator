@@ -35,7 +35,6 @@ try {
           try {
             const x = find(b, identifierName);
             if (!x) return;
-            def("Export Def I", x, identifierName)
             if (x.type === "ClassDeclaration") {
               // proptypes might be defined as external expression statements
               pt = propTypesToObject(findClassPropTypes(x, identifierName), b);
@@ -79,24 +78,30 @@ try {
         }
       }
 
-      const exps = Exports.evaluate(b);
+      let exps = Exports.evaluate(b);
       if (exps) {
-        if (exps.length) {
-          exps.map(
-            (exp) => {
-              // callInterogator(exp.declaration.declarations[0]);
-            }
-          )
-        } else {
-          // callInterogator(exps.declaration.declarations[0]);
+        if (typeof exps === 'object' && !exps.length) {
+          exps = [exps];
         }
+        exps.map(
+          (exp) => {
+            if (exp.declaration.hasOwnProperty('declarations')) {
+              exp.declaration.declarations.forEach((dec) => {
+                console.log(dec.id.name)
+              });
+            } else {
+              console.log(exp.declaration.id.name)
+            }
+          }
+        )
       }
+
 
     });
 
-    console.log("Report:");
-    reporter(reports);
-    writeToTest(reports);
+    // console.log("Report:");
+    // reporter(reports);
+    // writeToTest(reports);
 
   })
 } catch(error) {
