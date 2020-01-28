@@ -12,7 +12,7 @@ const { Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Ex
 const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./lib/AST");
 const { propTypesToObject } = require("./lib/propTypesToObject");
 try {
-  glob(config.src+'**/*.js', {}, function(err, files) {
+  glob(config.src+'mul*.js', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -85,6 +85,7 @@ try {
         }
         exps.map(
           (exp) => {
+            console.log(exp.type)
             if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
@@ -95,7 +96,7 @@ try {
                 console.log("dec:", dec.id.name, dec.type)
               }  
             } else {
-              console.log(exp.specifiers)
+              console.log(exp)
             }
           }
         )
