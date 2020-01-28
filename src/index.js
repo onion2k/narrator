@@ -8,11 +8,21 @@ const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const { Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
+const { AllExports, Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
 const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./lib/AST");
 const { propTypesToObject } = require("./lib/propTypesToObject");
 try {
-  glob(config.src+'mul*.js', {}, function(err, files) {
+  /**
+   * Clear screen
+   */
+  console.clear();
+
+  /**
+   * Title
+   */
+  console.log("Narrating", config.src, "\n")
+
+  glob(config.src+'*.js', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -78,25 +88,24 @@ try {
         }
       }
 
-      let exps = Exports.evaluate(b);
+      let exps = AllExports.evaluate(b);
       if (exps) {
         if (typeof exps === 'object' && !exps.length) {
           exps = [exps];
         }
         exps.map(
           (exp) => {
-            console.log(exp.type)
             if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
-                  console.log("dec:", dec.id.name, dec.init.type)
+                  console.log(dec.init.type)
                 });
               } else {
                 const dec = exp.declaration;
-                console.log("dec:", dec.id.name, dec.type)
+                console.log(dec.type)
               }  
             } else {
-              console.log(exp)
+              console.log(find(b, exp.specifiers[0].exported.name).declarations[0].init.type)
             }
           }
         )
@@ -104,7 +113,6 @@ try {
 
     });
 
-    // console.log("Report:");
     // reporter(reports);
     // writeToTest(reports);
 

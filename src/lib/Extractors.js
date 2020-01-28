@@ -6,11 +6,11 @@ module.exports = {
   Expressions: jsonata("program.body[type='ExpressionStatement']"),
   ExportDefault: jsonata("program.body[type='ExportDefaultDeclaration']"),
   Exports: jsonata("program.body[type='ExportNamedDeclaration']"),
-  ExportSpecifiers: jsonata("program.body[type='ExportNamedDeclaration'][**[type='ExportSpecifier']]"),
+  ExportSpecifiers: jsonata("program.body[type='ExportNamedDeclaration']"),
   Imports: jsonata("program.body[type='ImportDeclaration']"),
   IdentifierName: jsonata("declaration.name"),
   CalleeName: jsonata("declaration.callee.callee.name"),
 
-  Exports: jsonata("program.body[type='ExportNamedDeclaration'][**[type='ExportSpecifier']]"),
+  AllExports: jsonata("program.body[type='ExportDefaultDeclaration' or type='ExportNamedDeclaration']"),
 
 }
