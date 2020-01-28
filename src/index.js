@@ -85,13 +85,17 @@ try {
         }
         exps.map(
           (exp) => {
-            if (exp.declaration.hasOwnProperty('declarations')) {
-              exp.declaration.declarations.forEach((dec) => {
-                console.log("dec:", dec.id.name, dec.init.type)
-              });
+            if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
+              if (exp.declaration.hasOwnProperty('declarations')) {
+                exp.declaration.declarations.forEach((dec) => {
+                  console.log("dec:", dec.id.name, dec.init.type)
+                });
+              } else {
+                const dec = exp.declaration;
+                console.log("dec:", dec.id.name, dec.type)
+              }  
             } else {
-              const dec = exp.declaration;
-              console.log("dec:", dec.id.name, dec.type)
+              console.log(exp.specifiers)
             }
           }
         )
