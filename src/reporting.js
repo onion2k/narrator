@@ -18,23 +18,20 @@ function clipper(str, percent) {
 
 module.exports = {
   reporter: (reports) => {
-    const maxFileLength = Math.max(...reports.map(report => report.file.length));
     reports.forEach((report) => {
-      const { name, file, b, pt } = report;
+      const { name, file, imports, pt } = report;
 
       const srcfile = './<src>/'+file.replace(config.src, '');
-
-      const exports = Exports.evaluate(b);
 
       const proptypes = pt || {}
 
       console.log("File: ", srcfile.brightWhite)
       console.log(clipper("Component: "+name, 50).brightYellow,
-        (React(b) ? clipper("Rct", 4).green : clipper("Rct", 4).red),
-        (Redux(b) ? clipper("Rdx", 4).green : clipper("Rdx", 4).red),
-        (PropTypes(b) ? clipper("PTs", 4).green : clipper("PTs", 4).red),
-        (ExportDefault.evaluate(b) ? clipper("Def", 4).green : clipper("Def", 4).red),
-        (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("No Named", 10).red),
+        (imports['react'] ? clipper("Rct", 4).green : clipper("Rct", 4).red),
+        (imports['react-redux'] ? clipper("Rdx", 4).green : clipper("Rdx", 4).red),
+        (imports['prop-types'] ? clipper("PTs", 4).green : clipper("PTs", 4).red),
+        // (ExportDefault.evaluate(b) ? clipper("Def", 4).green : clipper("Def", 4).red),
+        // (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("No Named", 10).red),
         (Object.keys(proptypes).length ? clipper(`Props: ${Object.keys(proptypes).length}`, 10).green : clipper("No Props", 10).red)
       );
 

@@ -5,7 +5,9 @@ const ImportLibTest = function(lib) {
 }
 
 module.exports = {
+  ImportLibTest,
   React: ImportLibTest("react").evaluate,
   Redux: ImportLibTest("react-redux").evaluate,
   PropTypes: ImportLibTest("prop-types").evaluate,
+  Imports: jsonata("program.body[type='ImportDeclaration']"),
 }

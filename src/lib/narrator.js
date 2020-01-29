@@ -3,8 +3,11 @@ const babelParser = require("@babel/parser");
 const config = require("../narrator.config.json");
 
 class Narrator {
+
   constructor(file) {
+
     const contents = fs.readFileSync(file, "utf8");
+
     const b = babelParser.parse(contents, {
       sourceType: "module",
       plugins: config.babel.plugins
@@ -12,6 +15,7 @@ class Narrator {
 
     this.file = file;
     this.b = b;
+
   }
 }
 

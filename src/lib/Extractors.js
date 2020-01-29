@@ -7,9 +7,6 @@ module.exports = {
   Exports: jsonata("program.body[type='ExportDefaultDeclaration' or type='ExportNamedDeclaration']"),
   ExportDefault: jsonata("program.body[type='ExportDefaultDeclaration']"),
   ExportSpecifiers: jsonata("program.body[type='ExportNamedDeclaration']"),
-  Imports: jsonata("program.body[type='ImportDeclaration']"),
   IdentifierName: jsonata("declaration.name"),
   CalleeName: jsonata("declaration.callee.callee.name"),
-
-
 }

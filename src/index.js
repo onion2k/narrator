@@ -7,12 +7,22 @@ const babelParser = require("@babel/parser");
 
 const config = require("./narrator.config.json");
 
-const { AllExports, Exports, ExportDefault, IdentifierName, CalleeName } = require("./lib/Extractors");
-const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./lib/AST");
-const { propTypesToObject } = require("./lib/propTypesToObject");
+const { Exports } = require("./lib/Extractors");
+const { find } = require("./lib/AST");
 const { buildReportObj } = require('./lib/buildReportObj')
 
 const { Narrator } = require('./lib/narrator')
+
+const { ImportLibTest } = require("./lib/Imports");
+
+function checkImports(b, imports) {
+  const i = {}
+  imports.forEach((imp)=>{
+    const found = ImportLibTest(imp).evaluate(b);
+    i[imp] = found ? true : false;
+  })
+  return i;
+}
 
 try {
   /**
@@ -25,7 +35,7 @@ try {
    */
   console.log("Narrating", config.src, "\n")
 
-  glob(config.src+'*.js', {}, function(err, files) {
+  glob(config.src+'*.js?(x)', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -41,7 +51,7 @@ try {
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
-              reports.push({ ...buildReportObj(exp, n.b), file });
+              reports.push({ ...buildReportObj(exp, n.b), imports: checkImports(n.b, ['react', 'react-redux', 'prop-types']), file });
             }
             if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
               if (exp.declaration.hasOwnProperty('declarations')) {
