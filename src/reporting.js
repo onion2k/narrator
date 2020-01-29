@@ -26,6 +26,8 @@ module.exports = {
 
       const exports = Exports.evaluate(b);
 
+      const proptypes = pt || {}
+
       console.log("File: ", srcfile.brightWhite)
       console.log(clipper("Component: "+name, 50).brightYellow,
         (React(b) ? clipper("Rct", 4).green : clipper("Rct", 4).red),
@@ -33,10 +35,10 @@ module.exports = {
         (PropTypes(b) ? clipper("PTs", 4).green : clipper("PTs", 4).red),
         (ExportDefault.evaluate(b) ? clipper("Def", 4).green : clipper("Def", 4).red),
         (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("No Named", 10).red),
-        (Object.keys(pt).length ? clipper(`Props: ${Object.keys(pt).length}`, 10).green : clipper("No Props", 10).red)
+        (Object.keys(proptypes).length ? clipper(`Props: ${Object.keys(proptypes).length}`, 10).green : clipper("No Props", 10).red)
       );
 
-      if (Object.keys(pt).length) {
+      if (Object.keys(proptypes).length) {
         const propCount = Object.keys(pt).length;
         const sortedPt = Object.entries(pt).sort((a, b) => {
           return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1
@@ -51,6 +53,8 @@ module.exports = {
             typeof prop[1].value === 'object' ? clipper('Object', 50) : clipper(prop[1].value, 50),
           );
         })
+      } else {
+        console.log("No proptypes found");
       }
 
     });
