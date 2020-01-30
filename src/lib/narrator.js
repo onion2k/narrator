@@ -1,6 +1,7 @@
 const fs = require("fs");
 const babelParser = require("@babel/parser");
 const config = require("../narrator.config.json");
+const { ImportLibTest } = require("./Imports");
 
 class Narrator {
 
@@ -17,6 +18,13 @@ class Narrator {
     this.b = b;
 
   }
+
+  checkImports = (imports) => {
+    return Object.fromEntries(imports.map(
+      (i)=>[i, ImportLibTest(i).evaluate(this.b) ? true : false]
+    ));
+  }
+  
 }
 
 module.exports = { Narrator }

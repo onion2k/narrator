@@ -13,17 +13,6 @@ const { buildReportObj } = require('./lib/buildReportObj')
 
 const { Narrator } = require('./lib/narrator')
 
-const { ImportLibTest } = require("./lib/Imports");
-
-function checkImports(b, imports) {
-  const i = {}
-  imports.forEach((imp)=>{
-    const found = ImportLibTest(imp).evaluate(b);
-    i[imp] = found ? true : false;
-  })
-  return i;
-}
-
 try {
   /**
    * Clear screen
@@ -51,19 +40,22 @@ try {
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
-              reports.push({ ...buildReportObj(exp, n.b), imports: checkImports(n.b, ['react', 'react-redux', 'prop-types']), file });
+              reports.push({
+                ...buildReportObj(exp, n.b),
+                imports: n.checkImports(['react', 'react-redux', 'prop-types']), file 
+              });
             }
             if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
-                  console.log(dec.init.type)
+                  // console.log(dec.init.type)
                 });
               } else {
                 const dec = exp.declaration;
-                console.log(dec.type)
+                // console.log(dec.type)
               }  
             } else {
-              console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
+              // console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
             }
           }
         )
