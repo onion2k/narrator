@@ -9,5 +9,5 @@ module.exports = {
   React: ImportLibTest("react").evaluate,
   Redux: ImportLibTest("react-redux").evaluate,
   PropTypes: ImportLibTest("prop-types").evaluate,
-  Imports: jsonata("program.body[type='ImportDeclaration']"),
+  Imports: jsonata("program.body[type='ImportDeclaration'].source.value"),
 }

@@ -32,6 +32,8 @@ try {
 
       const n = new Narrator(file);
 
+      console.log(n.listImports())
+
       let exps = Exports.evaluate(n.b);
       if (exps) {
         if (typeof exps === 'object' && !exps.length) {
