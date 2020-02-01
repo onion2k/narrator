@@ -34,9 +34,7 @@ try {
 
       let exps = Exports.evaluate(n.b);
       if (exps) {
-        if (typeof exps === 'object' && !exps.length) {
-          exps = [exps];
-        }
+        if (typeof exps === 'object' && !exps.length) { exps = [exps]; }
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
