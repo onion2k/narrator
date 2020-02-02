@@ -20,7 +20,11 @@ class Narrator {
   }
 
   listImports = () => {
-    return Imports.evaluate(this.b);
+    const imports = Imports.evaluate(this.b);
+    if (!imports) { return []; }
+    if (!imports.sequence) { return [imports]; }
+    delete imports.sequence;
+    return imports;
   }
 
   checkImports = (imports) => {
