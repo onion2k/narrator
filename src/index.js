@@ -22,9 +22,9 @@ try {
   /**
    * Title
    */
-  console.log("Narrating", config.src, "\n")
+  // console.log("Narrating", config.src, "\n")
 
-  glob(config.src+'*.js?(x)', {}, function(err, files) {
+  glob(config.src+'mul*.js?(x)', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -32,25 +32,32 @@ try {
 
       const n = new Narrator(file);
 
-      console.log(n.listImports())
-
       let exps = Exports.evaluate(n.b);
+
       if (exps) {
         if (typeof exps === 'object' && !exps.length) { exps = [exps]; }
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
+              console.log('Default exp in', file)
+              /**
+               * report on node.declaration
+               */
               reports.push({
                 ...buildReportObj(exp, n.b),
                 imports: n.checkImports(['react', 'react-redux', 'prop-types']), file 
               });
-            }
-            if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
+            } else if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
+              console.log('Named exp in', file, exp.type)
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
-                  // console.log(dec.init.type)
+                  console.log(dec.type)
                 });
               } else {
+              /**
+               * report on node.declaration
+               */
+              console.log(buildReportObj(exp, n.b))
                 const dec = exp.declaration;
                 // console.log(dec.type)
               }  

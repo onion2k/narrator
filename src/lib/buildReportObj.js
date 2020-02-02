@@ -5,7 +5,13 @@ const { propTypesToObject } = require("./propTypesToObject");
 const buildReportObj = (node, parsedJs) => {
   let pt = {};
   if (node) {
-    if (node.declaration.type === "Identifier") {
+    console.log(node.declaration.type)
+    if (node.declaration.type === "ClassDeclaration") {
+      console.log(node.declaration.id.name)
+    } else if (node.declaration.type === "Identifier") {
+      /**
+       * Find the ident. If there isn't one, anon export?
+       */
       const identifierName = IdentifierName.evaluate(node);
       try {
         const x = find(parsedJs, identifierName);
