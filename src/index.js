@@ -24,7 +24,7 @@ try {
    */
   // console.log("Narrating", config.src, "\n")
 
-  glob(config.src+'mul*.js?(x)', {}, function(err, files) {
+  glob(config.src+'*.js?(x)', {}, function(err, files) {
     if (err) { console.log(err); }
     const reports = [];
 
@@ -43,7 +43,7 @@ try {
                * report on node.declaration
                */
               const dec = exp.declaration;
-              console.log("Default declaration:", dec.type)
+              console.log("Default:", dec.type, dec.name)
               reports.push({
                 ...buildReportObj(exp, n.b),
                 imports: n.checkImports(['react', 'react-redux', 'prop-types']), file
@@ -52,16 +52,16 @@ try {
               // console.log('Named exp in', file, exp.type)
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
-                  console.log("Subdeclaration:", dec.type)
+                  console.log("Declaration (sub):", dec.type, dec.id.name)
                 });
               } else {
                 const dec = exp.declaration;
-                console.log("Undeclared:", dec.type)
+                console.log("Declaration (no sub):", dec.type, dec.id.name)
                 buildReportObj(exp, n.b)
               }  
             } else {
               exp.specifiers.forEach((spec)=>{
-                console.log("Specifier:", spec.exported.name)
+                console.log("Declaration:", spec.exported.type, spec.exported.name)
                 // console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
               })
             }
