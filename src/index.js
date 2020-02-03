@@ -39,30 +39,31 @@ try {
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
-              console.log('Default exp in', file)
               /**
                * report on node.declaration
                */
+              const dec = exp.declaration;
+              console.log("Default declaration:", dec.type)
               reports.push({
                 ...buildReportObj(exp, n.b),
-                imports: n.checkImports(['react', 'react-redux', 'prop-types']), file 
+                imports: n.checkImports(['react', 'react-redux', 'prop-types']), file
               });
             } else if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
-              console.log('Named exp in', file, exp.type)
+              // console.log('Named exp in', file, exp.type)
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
-                  console.log(dec.type)
+                  console.log("Subdeclaration:", dec.type)
                 });
               } else {
-              /**
-               * report on node.declaration
-               */
-              console.log(buildReportObj(exp, n.b))
                 const dec = exp.declaration;
-                // console.log(dec.type)
+                console.log("Undeclared:", dec.type)
+                buildReportObj(exp, n.b)
               }  
             } else {
-              // console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
+              exp.specifiers.forEach((spec)=>{
+                console.log("Specifier:", spec.exported.name)
+                // console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
+              })
             }
           }
         )
@@ -75,5 +76,5 @@ try {
 
   })
 } catch(error) {
-  console.log(error);
+  console.log("Error:", error);
 };

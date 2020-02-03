@@ -5,9 +5,7 @@ const { propTypesToObject } = require("./propTypesToObject");
 const buildReportObj = (node, parsedJs) => {
   let pt = {};
   if (node) {
-    console.log(node.declaration.type)
     if (node.declaration.type === "ClassDeclaration") {
-      console.log(node.declaration.id.name)
       const x = node.declaration;
       pt = propTypesToObject(findClassPropTypes(x), parsedJs);
       if (!Object.keys(pt).length) {
@@ -15,13 +13,12 @@ const buildReportObj = (node, parsedJs) => {
           // pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);
         // }
       }
-      console.log(pt);
     } else if (node.declaration.type === "VariableDeclaration") {
+      console.log("VAR")
       const identifierName = IdentifierName.evaluate(node);
       if (identifierName) {
         pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName));
       }
-      console.log(pt);
     } else if (node.declaration.type === "Identifier") {
       /**
        * Find the ident. If there isn't one, anon export?
