@@ -1,8 +1,6 @@
 import React from "react";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
 
-class Example extends React.Component {
+export class Example extends React.Component {
   static propTypes = {
     selectorContent: PropTypes.func.isRequired,
     propFunction: PropTypes.func.isRequired,
@@ -22,12 +20,3 @@ class Example extends React.Component {
     return <div>{content}</div>;
   }
 }
-
-export default connect(
-  createStructuredSelector({
-    selectorContent: selectorContentSelector
-  }),
-  {
-    propFunction: () => {}
-  }
-)(Example);

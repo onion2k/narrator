@@ -25,12 +25,17 @@ try {
   // console.log("Narrating", config.src, "\n")
 
   glob(config.src+'*.js?(x)', {}, function(err, files) {
+
     if (err) { console.log(err); }
+
     const reports = [];
 
     files.map(file => {
 
+      console.log(file);
+
       const n = new Narrator(file);
+
 
       let exps = Exports.evaluate(n.b);
 
@@ -39,17 +44,15 @@ try {
         exps.map(
           (exp) => {
             if (exp.type === 'ExportDefaultDeclaration') {
-              /**
-               * report on node.declaration
-               */
               const dec = exp.declaration;
-              console.log("Default:", dec.type, dec.name)
               reports.push({
-                ...buildReportObj(exp, n.b),
+                ...buildReportObj(exp, n),
                 imports: n.checkImports(['react', 'react-redux', 'prop-types']), file
               });
             } else if (exp.hasOwnProperty('declaration') && exp.declaration !== null) {
-              // console.log('Named exp in', file, exp.type)
+              /**
+               * exported as an equality expression eg export const blah = thing
+               */
               if (exp.declaration.hasOwnProperty('declarations')) {
                 exp.declaration.declarations.forEach((dec) => {
                   console.log("Declaration (sub):", dec.type, dec.id.name)
@@ -57,7 +60,10 @@ try {
               } else {
                 const dec = exp.declaration;
                 console.log("Declaration (no sub):", dec.type, dec.id.name)
-                buildReportObj(exp, n.b)
+                reports.push({
+                  ...buildReportObj(exp, n),
+                  imports: n.checkImports(['react', 'react-redux', 'prop-types']), file
+                });
               }  
             } else {
               exp.specifiers.forEach((spec)=>{
@@ -69,9 +75,11 @@ try {
         )
       }
 
+      console.log();
+
     });
 
-    // reporter(reports);
+    reporter(reports);
     // writeToTest(reports);
 
   })

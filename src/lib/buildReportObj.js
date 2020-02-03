@@ -2,23 +2,30 @@ const { IdentifierName, CalleeName } = require("./Extractors");
 const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./AST");
 const { propTypesToObject } = require("./propTypesToObject");
 
-const buildReportObj = (node, parsedJs) => {
+const buildReportObj = (node, narrator) => {
   let pt = {};
+  const parsedJs = narrator.b;
   if (node) {
     if (node.declaration.type === "ClassDeclaration") {
       const x = node.declaration;
-      pt = propTypesToObject(findClassPropTypes(x), parsedJs);
+
+      console.log(narrator)
+
+      pt = propTypesToObject(narrator.findPropTypes(x), parsedJs);
+      console.log("pt", pt)
       if (!Object.keys(pt).length) {
-        //if (identifierName) {
-          // pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);
+        // const identifierName = IdentifierName.evaluate(node);
+        // if (identifierName) {
+        //   pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);
         // }
       }
+      return { name: '', pt }
     } else if (node.declaration.type === "VariableDeclaration") {
-      console.log("VAR")
       const identifierName = IdentifierName.evaluate(node);
       if (identifierName) {
         pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName));
       }
+      return { name: '', pt }
     } else if (node.declaration.type === "Identifier") {
       /**
        * Find the ident. If there isn't one, anon export?

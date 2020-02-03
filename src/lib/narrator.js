@@ -2,6 +2,7 @@ const fs = require("fs");
 const babelParser = require("@babel/parser");
 const config = require("../narrator.config.json");
 const { Imports, ImportLibTest } = require("./Imports");
+const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./AST");
 
 class Narrator {
 
@@ -19,6 +20,10 @@ class Narrator {
 
   }
 
+  findPropTypes = (declaration) => {
+    return findClassPropTypes(declaration);
+  }
+
   listImports = () => {
     const imports = Imports.evaluate(this.b);
     if (!imports) { return []; }
@@ -32,7 +37,13 @@ class Narrator {
       (i)=>[i, ImportLibTest(i).evaluate(this.b) ? true : false]
     ));
   }
-  
+
+  resolveIdentifier = (identifier) => {
+    /**
+     * Take an identifier and return the node it identifies
+     */
+  }
+
 }
 
 module.exports = { Narrator }

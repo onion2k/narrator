@@ -49,10 +49,3 @@ class Example extends React.Component {
 }
 
 export default Example;
-
-/**
- * Jsonata
- *
- * program.body[type='ClassDeclaration'][**.id[name='Example']]
- *
- */
