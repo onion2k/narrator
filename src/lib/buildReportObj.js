@@ -8,6 +8,20 @@ const buildReportObj = (node, parsedJs) => {
     console.log(node.declaration.type)
     if (node.declaration.type === "ClassDeclaration") {
       console.log(node.declaration.id.name)
+      const x = node.declaration;
+      pt = propTypesToObject(findClassPropTypes(x), parsedJs);
+      if (!Object.keys(pt).length) {
+        //if (identifierName) {
+          // pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);
+        // }
+      }
+      console.log(pt);
+    } else if (node.declaration.type === "VariableDeclaration") {
+      const identifierName = IdentifierName.evaluate(node);
+      if (identifierName) {
+        pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName));
+      }
+      console.log(pt);
     } else if (node.declaration.type === "Identifier") {
       /**
        * Find the ident. If there isn't one, anon export?
@@ -18,7 +32,7 @@ const buildReportObj = (node, parsedJs) => {
         if (!x) return { name: "", pt };
         if (x.type === "ClassDeclaration") {
           // proptypes might be defined as external expression statements
-          pt = propTypesToObject(findClassPropTypes(x, identifierName), parsedJs);
+          pt = propTypesToObject(findClassPropTypes(x), parsedJs);
           if (!Object.keys(pt).length) {
             if (identifierName) {
               pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);

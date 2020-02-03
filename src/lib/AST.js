@@ -8,7 +8,6 @@ const findClassProperty = jsonata("body.body[type='ClassProperty'][key.name=$cla
 const findExpressionsByLeftIdentifierName = jsonata("program.body[type='ExpressionStatement'].expression[**[name=$identifierName]]");
 
 const find = (b, identifierName) => {
-  console.log("Find:", identifierName)
   const i = findImportByName.evaluate(b, { identifierName });
   const f = findFunctionByName.evaluate(b, { identifierName });
   const c = findClassByName.evaluate(b, { identifierName });
