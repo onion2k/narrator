@@ -14,12 +14,10 @@
     }
   },
   "lint-staged": {
-    "*.(js|html|css)": [
-      "prettier --write",
-      "git add"
+    "**/*.(js|html|css)": [
+      "prettier --write"
     ],
-    ".js": [
-      "npm run lint:fix",
+    "**/*.js": [
       "npm run lint"
     ]
   },
