@@ -1,71 +1,71 @@
-const path = require("path");
-const fse = require("fs-extra");
-const ejs = require("ejs");
-const { Redux } = require("./lib/Imports");
+const path = require('path');
+const fse = require('fs-extra');
+const ejs = require('ejs');
+const { Redux } = require('./lib/Imports');
+const { sortRequiredFirst } = require('./sort');
 
-const write = function(type, dir, file, name, content) {
-  return fse
-    .outputFile(
-      `./output/${dir}/${path.basename(file, ".js")}.${type}.js`,
-      content
-    )
-    .then(e => {
-      console.log(
-        `Wrote ./output/${dir}/${path.basename(file, ".js")}.${type}.js`
-      );
-    });
-};
+const write = (type, dir, file, name, content) => fse
+  .outputFile(
+    `./output/${dir}/${path.basename(file, '.js')}.${type}.js`,
+    content,
+  )
+  .then((error) => {
+    if (error) { console.log(error); }
+    console.log(
+      `Wrote ./output/${dir}/${path.basename(file, '.js')}.${type}.js`,
+    );
+  });
 
 const propTypeDefs = {
   string: '"Test String"',
-  number: "1234",
-  func: "() => {}",
+  number: '1234',
+  func: '() => {}',
   array: '["Test Array 1", "Test Array 2", "Test Array 3"]',
-  object: "{}"
+  object: '{}',
 };
 
-const propsToTestProps = function(pt) {
-  const sortedPt = Object.entries(pt).sort((a, b) => {
-    return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1;
-  });
+const propsToTestProps = (pt) => {
+  const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
   return sortedPt
-    .map(([key, value]) => {
-      return value.required
-        ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${
-            value.type.string
-          }`
-        : `    // ${key}: ${value.value || "''"}, //${value.type.string}`;
-    })
-    .join("\n");
+    .map(([key, value]) => (value.required
+      ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${
+        value.type.string
+      }`
+      : `    // ${key}: ${value.value || "''"}, //${value.type.string}`))
+    .join('\n');
+};
+
+const writeToTest = (reports) => {
+  reports.forEach((report) => {
+    const {
+      name, file, b, pt,
+    } = report;
+
+    const template = Redux(b)
+      ? './src/templates/test_redux.ejs'
+      : './src/templates/test_default.ejs';
+
+    ejs.renderFile(
+      template,
+      {
+        file,
+        component: name,
+        as: name,
+        props: propsToTestProps(pt),
+      },
+      {
+        debug: false,
+      },
+      (error, result) => {
+        if (error) {
+          console.log(error);
+        }
+        write('test', 'tests', file, name, result);
+      },
+    );
+  });
 };
 
 module.exports = {
-  writeToTest: reports => {
-    reports.forEach((report, index) => {
-      const { name, file, b, pt } = report;
-
-      const template = Redux(b)
-        ? "./src/templates/test_redux.ejs"
-        : "./src/templates/test_default.ejs";
-
-      ejs.renderFile(
-        template,
-        {
-          file: file,
-          component: name,
-          as: name,
-          props: propsToTestProps(pt)
-        },
-        {
-          debug: false
-        },
-        (error, result) => {
-          if (error) {
-            console.log(error);
-          }
-          write("test", "tests", file, name, result);
-        }
-      );
-    });
-  }
+  writeToTest,
 };

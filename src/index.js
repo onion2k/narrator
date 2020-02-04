@@ -1,17 +1,16 @@
-const glob = require("glob");
-require("colors");
-const { reporter, def, callInterogator } = require("./reporting");
-const { writeToTest } = require("./output");
+const glob = require('glob');
+require('colors');
+// const babelParser = require('@babel/parser');
+const { reporter } = require('./reporting');
+// const { writeToTest } = require('./output');
 
-const babelParser = require("@babel/parser");
+const config = require('./narrator.config.json');
 
-const config = require("./narrator.config.json");
+// const { Exports } = require('./lib/Extractors');
+// const { find } = require('./lib/AST');
+const { buildReportObj } = require('./lib/buildReportObj');
 
-const { Exports } = require("./lib/Extractors");
-const { find } = require("./lib/AST");
-const { buildReportObj } = require("./lib/buildReportObj");
-
-const { Narrator } = require("./lib/narrator");
+const { Narrator } = require('./lib/narrator');
 
 try {
   /**
@@ -24,14 +23,14 @@ try {
    */
   // console.log("Narrating", config.src, "\n")
 
-  glob(config.src + "*.js?(x)", {}, function(err, files) {
+  glob(`${config.src}*.js?(x)`, {}, (err, files) => {
     if (err) {
       console.log(err);
     }
 
     const reports = [];
 
-    files.map(file => {
+    files.forEach((file) => {
       console.log(file);
 
       const n = new Narrator(file);
@@ -39,43 +38,43 @@ try {
       let exps = n.listExports();
 
       if (exps) {
-        if (typeof exps === "object" && !exps.length) {
+        if (typeof exps === 'object' && !exps.length) {
           exps = [exps];
         }
-        exps.map(exp => {
-          if (exp.type === "ExportDefaultDeclaration") {
-            const dec = exp.declaration;
+        exps.forEach((exp) => {
+          if (exp.type === 'ExportDefaultDeclaration') {
             reports.push({
               ...buildReportObj(exp, n),
-              imports: n.checkImports(["react", "react-redux", "prop-types"]),
-              file
+              imports: n.checkImports(['react', 'react-redux', 'prop-types']),
+              file,
             });
           } else if (
-            exp.hasOwnProperty("declaration") &&
-            exp.declaration !== null
+            Object.prototype.hasOwnProperty.call(exp, 'declaration')
+            && exp.declaration !== null
           ) {
             /**
              * exported as an equality expression eg export const blah = thing
              */
-            if (exp.declaration.hasOwnProperty("declarations")) {
-              exp.declaration.declarations.forEach(dec => {
-                console.log("Declaration (sub):", dec.type, dec.id.name);
+            if (
+              Object.prototype.hasOwnProperty.call(exp.declaration, 'declarations')) {
+              exp.declaration.declarations.forEach((dec) => {
+                console.log('Declaration (sub):', dec.type, dec.id.name);
               });
             } else {
               const dec = exp.declaration;
-              console.log("Declaration (no sub):", dec.type, dec.id.name);
+              console.log('Declaration (no sub):', dec.type, dec.id.name);
               reports.push({
                 ...buildReportObj(exp, n),
-                imports: n.checkImports(["react", "react-redux", "prop-types"]),
-                file
+                imports: n.checkImports(['react', 'react-redux', 'prop-types']),
+                file,
               });
             }
           } else {
-            exp.specifiers.forEach(spec => {
+            exp.specifiers.forEach((spec) => {
               console.log(
-                "Declaration:",
+                'Declaration:',
                 spec.exported.type,
-                spec.exported.name
+                spec.exported.name,
               );
               // console.log(find(n.b, exp.specifiers[0].exported.name).declarations[0].init.type)
             });
@@ -86,9 +85,9 @@ try {
       console.log();
     });
 
-    // reporter(reports);
+    reporter(reports);
     // writeToTest(reports);
   });
 } catch (error) {
-  console.log("Error:", error);
+  console.log('Error:', error);
 }
