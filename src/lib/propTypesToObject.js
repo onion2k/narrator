@@ -8,88 +8,107 @@ function parsePropChain(proptype) {
   let prop = proptype.value || proptype;
   const chain = [];
   try {
-    if (typeof prop === 'object' && prop !== null) {
-      while (prop.hasOwnProperty('object') || prop.hasOwnProperty('callee')) {
-        if (prop.hasOwnProperty('object')) {
+    if (typeof prop === "object" && prop !== null) {
+      while (prop.hasOwnProperty("object") || prop.hasOwnProperty("callee")) {
+        if (prop.hasOwnProperty("object")) {
           chain.push(prop.property.name);
           prop = prop.object;
-        } else if (prop.hasOwnProperty('callee')) {
+        } else if (prop.hasOwnProperty("callee")) {
           const args = [];
-          if (prop.hasOwnProperty('arguments')) {
-            prop.arguments.forEach((arg) => {
-              if (arg.hasOwnProperty('elements')) {
-                arg.elements.forEach((el) => {
-                  args.push(parsePropChain(el).reverse().join('.'));
-                });  
-              } 
+          if (prop.hasOwnProperty("arguments")) {
+            prop.arguments.forEach(arg => {
+              if (arg.hasOwnProperty("elements")) {
+                arg.elements.forEach(el => {
+                  args.push(
+                    parsePropChain(el)
+                      .reverse()
+                      .join(".")
+                  );
+                });
+              }
             });
           }
           if (prop.callee.hasOwnProperty("property")) {
-            chain.push(`${prop.callee.property.name}[${args.join(',')}]`);
+            chain.push(`${prop.callee.property.name}[${args.join(",")}]`);
           } else {
-            chain.push(`${prop.callee.name}[${args.join(',')}]`);
+            chain.push(`${prop.callee.name}[${args.join(",")}]`);
           }
-          if (prop.callee.hasOwnProperty('object')) {
+          if (prop.callee.hasOwnProperty("object")) {
             prop = prop.callee.object;
           } else {
             prop = false;
           }
         }
       }
-      chain.push(prop.name)
+      chain.push(prop.name);
     }
-  } catch(e) {
+  } catch (e) {
     console.error("Failed to parse prop chain.", proptype);
     process.exit(1);
   }
   return chain;
 }
 
-const propTypesToObject = ({ pt, pd }, b, file=null) => {
-
+const propTypesToObject = ({ pt, pd }, b, file = null) => {
   const propTypes = propTypesProperties.evaluate(pt);
   const defaultProps = defaultPropsProperties.evaluate(pd);
 
   let props = {};
   if (propTypes) {
-    propTypes.forEach((prop) => {
+    propTypes.forEach(prop => {
       const chain = parsePropChain(prop);
-      const required = chain[0] === 'isRequired';
+      const required = chain[0] === "isRequired";
       chain.reverse();
-      props[prop.key.name] = { type: prop.value.type, value: '', type: { string: chain.join('.'), chain: chain }, required };
+      props[prop.key.name] = {
+        type: prop.value.type,
+        value: "",
+        type: { string: chain.join("."), chain: chain },
+        required
+      };
     });
   }
 
   if (defaultProps) {
-    defaultProps.forEach((prop) => {
+    defaultProps.forEach(prop => {
       switch (prop.value.type) {
         case "ArrayExpression":
-          props[prop.key.name].value = prop.value.elements.map(element => element.value);
+          props[prop.key.name].value = prop.value.elements.map(
+            element => element.value
+          );
           break;
         case "ObjectExpression":
-          props[prop.key.name].value = prop.value.properties.reduce((i, element) => { i[element.key.name] = element.value.value;  return i;  }, {});
+          props[prop.key.name].value = prop.value.properties.reduce(
+            (i, element) => {
+              i[element.key.name] = element.value.value;
+              return i;
+            },
+            {}
+          );
           break;
         case "NullLiteral":
-          if (props[prop.key.name].type.string === 'PropTypes.node') {
-            props[prop.key.name].value =  "Component";
+          if (props[prop.key.name].type.string === "PropTypes.node") {
+            props[prop.key.name].value = "Component";
           } else {
-            props[prop.key.name].value =  "null";
+            props[prop.key.name].value = "null";
           }
           break;
         case "MemberExpression":
-          props[prop.key.name].value = prop.value.object.name+'.'+prop.value.property.name;
+          props[prop.key.name].value =
+            prop.value.object.name + "." + prop.value.property.name;
           break;
         case "Identifier":
-          const x = find(b, prop.key.name)
-          if (typeof x === 'object' && x !== null) {
+          const x = find(b, prop.key.name);
+          if (typeof x === "object" && x !== null) {
             switch (x.type) {
               case "ImportDeclaration":
-                props[prop.key.name].value = prop.value.name+' from '+x.source.value;
+                props[prop.key.name].value =
+                  prop.value.name + " from " + x.source.value;
                 break;
               case "FunctionDeclaration":
-                props[prop.key.name].value = prop.value.name+' from line '+x.id.start;
+                props[prop.key.name].value =
+                  prop.value.name + " from line " + x.id.start;
                 break;
-              }  
+            }
           } else {
             if (x === null) {
               props[prop.key.name].value = "NULL";
@@ -103,16 +122,15 @@ const propTypesToObject = ({ pt, pd }, b, file=null) => {
           break;
         case "NumericLiteral":
         case "BooleanLiteral":
-            props[prop.key.name].value = prop.value.value;
+          props[prop.key.name].value = prop.value.value;
           break;
       }
-    });  
+    });
   }
 
   return props;
-
-}
+};
 
 module.exports = {
   propTypesToObject
-}
+};

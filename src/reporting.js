@@ -4,10 +4,10 @@ const { React, Redux, PropTypes } = require("./lib/Imports");
 const config = require("./narrator.config.json");
 
 function clipper(str, percent) {
-  if (typeof str !== 'string') return "";
+  if (typeof str !== "string") return "";
 
   const termWidth = process.stdout.columns;
-  const width = Math.floor(termWidth / 100 * percent);
+  const width = Math.floor((termWidth / 100) * percent);
 
   if (str.length > width) {
     return str.toString().substring(0, width);
@@ -17,52 +17,63 @@ function clipper(str, percent) {
 }
 
 module.exports = {
-  reporter: (reports) => {
-    reports.forEach((report) => {
+  reporter: reports => {
+    reports.forEach(report => {
       const { name, file, imports, pt } = report;
 
-      const srcfile = './<src>/'+file.replace(config.src, '');
+      const srcfile = "./<src>/" + file.replace(config.src, "");
 
-      const proptypes = pt || {}
+      const proptypes = pt || {};
 
-      console.log("File: ", srcfile.brightWhite)
-      console.log(clipper("Component: "+name, 50).brightYellow,
-        (imports['react'] ? clipper("Rct", 4).green : clipper("Rct", 4).red),
-        (imports['react-redux'] ? clipper("Rdx", 4).green : clipper("Rdx", 4).red),
-        (imports['prop-types'] ? clipper("PTs", 4).green : clipper("PTs", 4).red),
+      console.log("File: ", srcfile.brightWhite);
+      console.log(
+        clipper("Component: " + name, 50).brightYellow,
+        imports["react"] ? clipper("Rct", 4).green : clipper("Rct", 4).red,
+        imports["react-redux"]
+          ? clipper("Rdx", 4).green
+          : clipper("Rdx", 4).red,
+        imports["prop-types"] ? clipper("PTs", 4).green : clipper("PTs", 4).red,
         // (ExportDefault.evaluate(b) ? clipper("Def", 4).green : clipper("Def", 4).red),
         // (exports ? clipper(`Named: ${exports.length || 1}`, 10).green : clipper("No Named", 10).red),
-        (Object.keys(proptypes).length ? clipper(`Props: ${Object.keys(proptypes).length}`, 10).green : clipper("No Props", 10).red)
+        Object.keys(proptypes).length
+          ? clipper(`Props: ${Object.keys(proptypes).length}`, 10).green
+          : clipper("No Props", 10).red
       );
 
       if (Object.keys(proptypes).length) {
         const propCount = Object.keys(pt).length;
         const sortedPt = Object.entries(pt).sort((a, b) => {
-          return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1
+          return a[1].required === b[1].required ? 0 : a[1].required ? -1 : 1;
         });
-        sortedPt.forEach((prop, index)=>{
-          const type = prop[1].type.string || '';
-          const connector = index===0 ? "┌" : index===propCount-1 ? "└" : "│";
+        sortedPt.forEach((prop, index) => {
+          const type = prop[1].type.string || "";
+          const connector =
+            index === 0 ? "┌" : index === propCount - 1 ? "└" : "│";
           console.log(
             connector,
-            prop[1].required ? clipper(prop[0], 16).brightGreen : clipper(prop[0], 16).green,
-            prop[1].required ? clipper(type, 30).brightWhite : clipper(type, 30).white,
-            typeof prop[1].value === 'object' ? clipper('Object', 50) : clipper(prop[1].value, 50),
+            prop[1].required
+              ? clipper(prop[0], 16).brightGreen
+              : clipper(prop[0], 16).green,
+            prop[1].required
+              ? clipper(type, 30).brightWhite
+              : clipper(type, 30).white,
+            typeof prop[1].value === "object"
+              ? clipper("Object", 50)
+              : clipper(prop[1].value, 50)
           );
-        })
+        });
       } else {
         console.log("No proptypes found");
       }
-
     });
   },
   def: (type, x, identifierName) => {
-    if (x===null) {
+    if (x === null) {
       // console.log(type.padEnd(15), "NULL", identifierName );
       return;
     }
-    if (x.type==="ClassDeclaration") {
-      let className = '(Class)';
+    if (x.type === "ClassDeclaration") {
+      let className = "(Class)";
       if (x.superClass) {
         switch (x.superClass.type) {
           case "MemberExpression":
@@ -74,14 +85,13 @@ module.exports = {
         }
       }
       // console.log(type.padEnd(15), className, identifierName );
-    } else if (x.type==="VariableDeclaration") {
+    } else if (x.type === "VariableDeclaration") {
       // console.log(type.padEnd(15), '(Variable)', identifierName );
     } else {
       // console.log(type.padEnd(15),'(No idea)', identifierName );
     }
   },
-  callInterogator: (callee) => {
-
+  callInterogator: callee => {
     return;
 
     switch (callee.init.type) {
@@ -95,7 +105,12 @@ module.exports = {
         /**
          * An object call
          */
-        console.log("Call :", callee.init.callee.object.name+"."+callee.init.callee.property.name);
+        console.log(
+          "Call :",
+          callee.init.callee.object.name +
+            "." +
+            callee.init.callee.property.name
+        );
         break;
       case "ArrowFunctionExpression":
         /**
@@ -114,11 +129,14 @@ module.exports = {
         console.log(callee.init.type, ":", callee.init.value);
         break;
       case "ObjectExpression":
-        console.log("Object : ", callee.init.properties.map((prop)=>prop.key.name));
+        console.log(
+          "Object : ",
+          callee.init.properties.map(prop => prop.key.name)
+        );
         break;
       default:
         console.log(callee.init.type);
         break;
-      }
+    }
   }
-}
+};

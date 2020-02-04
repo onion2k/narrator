@@ -4,8 +4,25 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon ./src/index.js"
+    "watch": "nodemon ./src/index.js",
+    "lint": "eslint src/*.js --fix",
+    "test": "lint-staged",
+    "prettify": "prettier src/**/*.js --write"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint"
+    }
+  },
+  "lint-staged": {
+    "*.(js|html|css)": [
+      "prettier --write",
+      "git add"
+    ],
+    ".js": [
+      "npm run lint:fix",
+      "npm run lint"
+    ]
   },
   "keywords": [],
   "author": "",
@@ -15,10 +32,14 @@
     "change-case": "^3.1.0",
     "colors": "^1.4.0",
     "ejs": "^2.6.1",
+    "eslint": "^6.8.0",
     "fs-extra": "^8.1.0",
     "glob": "^7.1.3",
+    "husky": "^4.2.1",
     "jsonata": "^1.7.0",
+    "lint-staged": "^10.0.7",
     "lodash": "^4.17.15",
-    "nodemon": "^1.18.11"
+    "nodemon": "^1.18.11",
+    "prettier": "^1.19.1"
   }
 }
