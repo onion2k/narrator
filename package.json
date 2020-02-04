@@ -15,7 +15,8 @@
   },
   "lint-staged": {
     "**/*.(js|html|css)": [
-      "prettier --write"
+      "prettier --write",
+      "git add"
     ],
     "**/*.js": [
       "npm run lint"
