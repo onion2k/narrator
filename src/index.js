@@ -36,8 +36,7 @@ try {
 
       const n = new Narrator(file);
 
-
-      let exps = Exports.evaluate(n.b);
+      let exps = n.listExports();
 
       if (exps) {
         if (typeof exps === 'object' && !exps.length) { exps = [exps]; }
@@ -79,7 +78,7 @@ try {
 
     });
 
-    reporter(reports);
+    // reporter(reports);
     // writeToTest(reports);
 
   })

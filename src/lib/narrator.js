@@ -1,6 +1,7 @@
 const fs = require("fs");
 const babelParser = require("@babel/parser");
 const config = require("../narrator.config.json");
+const { Exports } = require("./Extractors");
 const { Imports, ImportLibTest } = require("./Imports");
 const { find, findExpressionPropTypes, findClassPropTypes, declarationParamsToObject } = require("./AST");
 
@@ -23,6 +24,8 @@ class Narrator {
   findPropTypes = (declaration) => {
     return findClassPropTypes(declaration);
   }
+
+  listExports = () => Exports.evaluate(this.b);
 
   listImports = () => {
     const imports = Imports.evaluate(this.b);
