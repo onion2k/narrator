@@ -6,12 +6,11 @@
   "scripts": {
     "watch": "nodemon ./src/index.js",
     "lint": "eslint src/*.js --fix",
-    "test": "lint-staged",
     "prettify": "prettier src/**/*.js --write"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run lint"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
