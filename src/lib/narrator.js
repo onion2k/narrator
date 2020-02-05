@@ -16,11 +16,12 @@ function traverse(node, indent = 0) {
     delete nodeCopy.computed;
     delete nodeCopy.shorthand;
     delete nodeCopy.extra;
+    delete nodeCopy.leadingComments;
     delete nodeCopy.trailingComments;
 
     Object.entries(nodeCopy).forEach(([key, value]) => {
-      const val = value !== null ? value.type : '';
-      console.log(''.padStart(indent), key, val);
+      const val = value !== null ? value.type || typeof value : 'null';
+      console.log(''.padStart(indent), key.yellow, val.green);
       if (key !== 'superClass') {
         switch (val) {
           default:

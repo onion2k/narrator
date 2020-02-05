@@ -1,7 +1,7 @@
 {
   "src": "./tests/**/",
   "src_": "../structureflow/sf-web-ui/client/**/",
-  "files": "mul*.js?(x)",
+  "files": "funcs*.js?(x)",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

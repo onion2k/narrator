@@ -6,11 +6,23 @@ ImportDeclaration
 ExportNamedDeclaration
   type
   declaration
+    id
+      name
+    declarations
+      [
+        id
+          name
+      ]
   specifiers
+    [
+      exported
+        name
+    ]
 
 ExportDefaultDeclaration
   type
   declaration
+    name
   specifiers
 
 VariableDeclaration
