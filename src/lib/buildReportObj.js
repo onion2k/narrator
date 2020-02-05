@@ -15,15 +15,20 @@ const buildReportObj = (node, narrator) => {
       const x = node.declaration;
 
       pt = propTypesToObject(narrator.findPropTypes(x), parsedJs);
-      console.log('pt', pt);
       if (!Object.keys(pt).length) {
-        // const identifierName = IdentifierName.evaluate(node);
-        // if (identifierName) {
-        //   pt = propTypesToObject(findExpressionPropTypes(parsedJs, identifierName), parsedJs);
-        // }
+        const identifierName = IdentifierName.evaluate(node);
+        if (identifierName) {
+          pt = propTypesToObject(
+            findExpressionPropTypes(parsedJs, identifierName),
+            parsedJs,
+          );
+        }
       }
       return { name: '', pt };
-    } if (node.declaration.type === 'VariableDeclaration') {
+    }
+    if (node.declaration.type === 'VariableDeclaration') {
+      console.log(node.declaration.type);
+      narrator.findPropTypes(node.declaration);
       const identifierName = IdentifierName.evaluate(node);
       if (identifierName) {
         pt = propTypesToObject(
@@ -31,7 +36,8 @@ const buildReportObj = (node, narrator) => {
         );
       }
       return { name: '', pt };
-    } if (node.declaration.type === 'Identifier') {
+    }
+    if (node.declaration.type === 'Identifier') {
       /**
        * Find the ident. If there isn't one, anon export?
        */
@@ -61,7 +67,8 @@ const buildReportObj = (node, narrator) => {
         console.log(error);
       }
       return { name: identifierName, pt };
-    } if (node.declaration.type === 'CallExpression') {
+    }
+    if (node.declaration.type === 'CallExpression') {
       // const CallExpressionName = CalleeName.evaluate(node);
       if (CalleeName.evaluate(node) === 'connect') {
         const identifierName = node.declaration.arguments[0].name;

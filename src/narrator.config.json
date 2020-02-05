@@ -1,6 +1,7 @@
 {
   "src": "./tests/**/",
   "src_": "../structureflow/sf-web-ui/client/**/",
+  "files": "mul*.js?(x)",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

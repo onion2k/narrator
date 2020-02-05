@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "watch": "nodemon ./src/index.js",
-    "lint": "eslint src/*.js --fix",
+    "lint": "eslint src/**/*.js --fix",
     "prettify": "prettier src/**/*.js --write"
   },
   "husky": {
@@ -14,10 +14,10 @@
     }
   },
   "lint-staged": {
-    "**/*.(js|html|css)": [
+    "src/**/*.(js|html|css)": [
       "prettier --write"
     ],
-    "**/*.js": [
+    "src/**/*.js": [
       "npm run lint"
     ]
   },
@@ -39,6 +39,7 @@
     "prettier": "^1.19.1"
   },
   "devDependencies": {
+    "babel-eslint": "^10.0.3",
     "eslint": "^6.1.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-plugin-import": "^2.20.1",

@@ -1,15 +1,10 @@
 const glob = require('glob');
 require('colors');
-// const babelParser = require('@babel/parser');
 const { reporter } = require('./reporting');
 // const { writeToTest } = require('./output');
 
 const config = require('./narrator.config.json');
-
-// const { Exports } = require('./lib/Extractors');
-// const { find } = require('./lib/AST');
 const { buildReportObj } = require('./lib/buildReportObj');
-
 const { Narrator } = require('./lib/narrator');
 
 try {
@@ -21,9 +16,9 @@ try {
   /**
    * Title
    */
-  // console.log("Narrating", config.src, "\n")
+  console.log('Narrating', config.src, config.files, '\n');
 
-  glob(`${config.src}*.js?(x)`, {}, (err, files) => {
+  glob(`${config.src}${config.files}`, {}, (err, files) => {
     if (err) {
       console.log(err);
     }
@@ -31,9 +26,10 @@ try {
     const reports = [];
 
     files.forEach((file) => {
-      console.log(file);
-
       const n = new Narrator(file);
+
+      console.log(file);
+      n.mapNodes();
 
       let exps = n.listExports();
 
@@ -43,11 +39,12 @@ try {
         }
         exps.forEach((exp) => {
           if (exp.type === 'ExportDefaultDeclaration') {
-            reports.push({
+            const expReport = {
               ...buildReportObj(exp, n),
               imports: n.checkImports(['react', 'react-redux', 'prop-types']),
               file,
-            });
+            };
+            reports.push(expReport);
           } else if (
             Object.prototype.hasOwnProperty.call(exp, 'declaration')
             && exp.declaration !== null
@@ -56,7 +53,11 @@ try {
              * exported as an equality expression eg export const blah = thing
              */
             if (
-              Object.prototype.hasOwnProperty.call(exp.declaration, 'declarations')) {
+              Object.prototype.hasOwnProperty.call(
+                exp.declaration,
+                'declarations',
+              )
+            ) {
               exp.declaration.declarations.forEach((dec) => {
                 console.log('Declaration (sub):', dec.type, dec.id.name);
               });
