@@ -1,0 +1,22 @@
+
+ImportDeclaration
+  source
+    value <- name of the import file
+
+ExportNamedDeclaration
+  type
+  declaration
+  specifiers
+
+ExportDefaultDeclaration
+  type
+  declaration
+  specifiers
+
+VariableDeclaration
+
+ClassDeclaration
+
+Identifier
+
+CallExpression

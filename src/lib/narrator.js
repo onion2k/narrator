@@ -23,22 +23,12 @@ function traverse(node, indent = 0) {
       console.log(''.padStart(indent), key, val);
       if (key !== 'superClass') {
         switch (val) {
-          case 'ClassProperty':
-            break;
-          case 'ClassMethod':
-            break;
-          case 'JSXElement':
-            break;
-          case 'ObjectProperty':
-            break;
           default:
             traverse(value, indent + 1);
             break;
         }
       }
     });
-  } else {
-    // jsonObj is a number or string
   }
 }
 
