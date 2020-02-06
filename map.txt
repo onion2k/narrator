@@ -23,6 +23,14 @@ ExportDefaultDeclaration
   type
   declaration
     name
+    id
+      name (stateless named functional)
+    id:null (stateless unnamed functional)
+  left
+    name
+  right
+    body
+      body
   specifiers
 
 VariableDeclaration
@@ -32,3 +40,23 @@ ClassDeclaration
 Identifier
 
 CallExpression
+
+FunctionExpression
+ArrowFunctionExpression
+
+ClassMethod
+ClassProperty
+
+
+----
+
+export named
+export default named
+export default unnamed
+export identifer named
+export default identifer named
+
+export n levels of indirection?
+
+export specifier(s)
+

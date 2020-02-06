@@ -95,7 +95,7 @@ const findExpressionPropTypes = (b, identifierName) => {
     return { pt, pd };
   }
 
-  console.log('EXP', identifierName);
+  // console.log('EXP', identifierName);
 
   if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
     const expressions = findExpressionsByLeftIdentifierName.evaluate(b, {
