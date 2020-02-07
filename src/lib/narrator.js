@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { get } = require('lodash');
 const babelParser = require('@babel/parser');
 const config = require('../narrator.config.json');
 const { Exports } = require('./Extractors');
@@ -45,6 +46,40 @@ class Narrator {
     this.file = file;
     this.b = b;
   }
+
+  typeMap = {
+    ExportNamedDeclaration: {
+      AssignmentExpression: 'declaration.left.name',
+      VariableDeclaration: 'declaration.declarations.0.id.name',
+      FunctionDeclaration: 'declaration.id.name',
+      ClassDeclaration: 'declaration.id.name',
+      Identifier: {},
+    },
+    ExportDefaultDeclaration: {
+      AssignmentExpression: 'declaration.left.name',
+      FunctionDeclaration: 'declaration.id.name',
+      ClassDeclaration: 'declaration.id.name',
+      CallExpression: 'declaration.arguments.0.name',
+      Identifier: 'declaration.name',
+    },
+  };
+
+  identifyNode = (node) => {
+    if (
+      Object.prototype.hasOwnProperty.call(node, 'declaration')
+      && node.declaration !== null
+    ) {
+      return get(
+        node,
+        `${this.typeMap[node.type][node.declaration.type]}`,
+        'anon',
+      );
+    } if (Object.prototype.hasOwnProperty.call(node, 'specifiers')) {
+      return get(node, 'specifiers.0.exported.name');
+    }
+
+    return null;
+  };
 
   mapNodes = () => {
     delete this.b.start;
