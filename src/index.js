@@ -36,8 +36,6 @@ try {
           exps = [exps];
         }
         exps.forEach((exp) => {
-          console.log(file.green, n.identifyNode(exp).yellow);
-
           if (exp.type === 'ExportDefaultDeclaration') {
             const expReport = {
               ...buildReportObj(exp, n),

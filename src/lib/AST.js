@@ -122,9 +122,11 @@ const findExpressionPropTypes = (b, identifierName) => {
   } else {
     // component defined as assignment and then exported separately
     const v = findVariableByName.evaluate(b, { identifierName });
-    v.declarations.forEach((variable) => {
-      pt = declarationParamsToObject(variable.init);
-    });
+    if (v) {
+      v.declarations.forEach((variable) => {
+        pt = declarationParamsToObject(variable.init);
+      });
+    }
     // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
   return { pt: pt ? pt.properties : {}, pd: pd ? pd.properties : {} };

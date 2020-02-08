@@ -1,4 +1,4 @@
-const { IdentifierName, CalleeName } = require('./Extractors');
+const { CalleeName } = require('./Extractors');
 const {
   find,
   findExpressionPropTypes,
@@ -10,13 +10,15 @@ const { propTypesToObject } = require('./propTypesToObject');
 const buildReportObj = (node, narrator) => {
   let pt = {};
   const parsedJs = narrator.b;
+  const identifierName = narrator.identifyNode(node);
+
   if (node) {
     if (node.declaration.type === 'ClassDeclaration') {
       const x = node.declaration;
 
       pt = propTypesToObject(narrator.findPropTypes(x), parsedJs);
+
       if (!Object.keys(pt).length) {
-        const identifierName = IdentifierName.evaluate(node);
         if (identifierName) {
           pt = propTypesToObject(
             findExpressionPropTypes(parsedJs, identifierName),
@@ -27,9 +29,7 @@ const buildReportObj = (node, narrator) => {
       return { name: '', pt };
     }
     if (node.declaration.type === 'VariableDeclaration') {
-      console.log(node.declaration.type);
       narrator.findPropTypes(node.declaration);
-      const identifierName = IdentifierName.evaluate(node);
       if (identifierName) {
         pt = propTypesToObject(
           findExpressionPropTypes(parsedJs, identifierName),
@@ -41,7 +41,6 @@ const buildReportObj = (node, narrator) => {
       /**
        * Find the ident. If there isn't one, anon export?
        */
-      const identifierName = IdentifierName.evaluate(node);
       try {
         const x = find(parsedJs, identifierName);
         if (!x) return { name: '', pt };
@@ -71,7 +70,7 @@ const buildReportObj = (node, narrator) => {
     if (node.declaration.type === 'CallExpression') {
       // const CallExpressionName = CalleeName.evaluate(node);
       if (CalleeName.evaluate(node) === 'connect') {
-        const identifierName = node.declaration.arguments[0].name;
+        // const identifierName = node.declaration.arguments[0].name;
         const x = find(parsedJs, identifierName);
         // def("Callee arg 0", x, identifierName);
         if (x !== null) {
@@ -86,9 +85,6 @@ const buildReportObj = (node, narrator) => {
         return { name: identifierName, pt };
       }
     } else if (node.declaration.type === 'FunctionDeclaration') {
-      const identifierName = node.declaration.id
-        ? node.declaration.id.name
-        : 'Anon';
       pt = declarationParamsToObject(node.declaration);
       return { name: identifierName, pt };
     } else {
