@@ -1,7 +1,7 @@
 const glob = require('glob');
 require('colors');
 const { reporter } = require('./reporting');
-// const { writeToTest } = require('./output');
+const { writeToTest } = require('./output');
 
 const config = require('./narrator.config.json');
 const { buildReportObj } = require('./lib/buildReportObj');
@@ -84,8 +84,13 @@ try {
       }
     });
 
-    reporter(reports);
-    // writeToTest(reports);
+    if (config.reporting === true) {
+      reporter(reports);
+    }
+
+    if (config.writeFiles === true) {
+      writeToTest(reports);
+    }
   });
 } catch (error) {
   console.log('Error:', error);

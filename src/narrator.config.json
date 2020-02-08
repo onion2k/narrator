@@ -6,5 +6,7 @@
   "testDir": "./tests",
   "babel": {
     "plugins": ["jsx", "dynamicImport", "classProperties", "exportDefaultFrom"]
-  }
+  },
+  "reporting": false,
+  "writeFiles": false
 }
