@@ -126,7 +126,6 @@ const findExpressionPropTypes = (b, identifierName) => {
         pt = declarationParamsToObject(variable.init);
       });
     }
-    // console.log(identifierName, v.declarations[0].init.params[0].properties[0].key.name)
   }
   return { pt: pt ? pt.properties : {}, pd: pd ? pd.properties : {} };
 };

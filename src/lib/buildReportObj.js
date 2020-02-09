@@ -70,9 +70,7 @@ const buildReportObj = (node, narrator) => {
     if (node.declaration.type === 'CallExpression') {
       // const CallExpressionName = CalleeName.evaluate(node);
       if (CalleeName.evaluate(node) === 'connect') {
-        // const identifierName = node.declaration.arguments[0].name;
         const x = find(parsedJs, identifierName);
-        // def("Callee arg 0", x, identifierName);
         if (x !== null) {
           if (x.type === 'ClassDeclaration') {
             pt = propTypesToObject(findClassPropTypes(x));
@@ -87,10 +85,8 @@ const buildReportObj = (node, narrator) => {
     } else if (node.declaration.type === 'FunctionDeclaration') {
       pt = declarationParamsToObject(node.declaration);
       return { name: identifierName, pt };
-    } else {
-      // console.log("Export Default".padEnd(15),
-      //   "(Something Else)",
-      //   exportDefault.declaration.type);
+    } else if (node.declaration.type === 'AssignmentExpression') {
+      console.log('Assignment');
     }
   }
 
