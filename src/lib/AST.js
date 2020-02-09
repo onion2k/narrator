@@ -91,11 +91,10 @@ const findExpressionPropTypes = (b, identifierName) => {
   let pd = {};
 
   if (!identifierName) {
+    // Not gonna work with anonymous functions if we do this...
     console.log('Missing ID: ', identifierName);
     return { pt, pd };
   }
-
-  // console.log('EXP', identifierName);
 
   if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
     const expressions = findExpressionsByLeftIdentifierName.evaluate(b, {

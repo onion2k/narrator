@@ -64,23 +64,6 @@ class Narrator {
     },
   };
 
-  identifyNode = (node) => {
-    if (
-      Object.prototype.hasOwnProperty.call(node, 'declaration')
-      && node.declaration !== null
-    ) {
-      return get(
-        node,
-        `${this.typeMap[node.type][node.declaration.type]}`,
-        'anon',
-      );
-    } if (Object.prototype.hasOwnProperty.call(node, 'specifiers')) {
-      return get(node, 'specifiers.0.exported.name');
-    }
-
-    return null;
-  };
-
   mapNodes = () => {
     delete this.b.start;
     delete this.b.end;
@@ -96,6 +79,24 @@ class Narrator {
     traverse(this.b);
 
     return {};
+  };
+
+  identifyNode = (node) => {
+    if (
+      Object.prototype.hasOwnProperty.call(node, 'declaration')
+      && node.declaration !== null
+    ) {
+      return get(
+        node,
+        `${this.typeMap[node.type][node.declaration.type]}`,
+        'anon',
+      );
+    }
+    if (Object.prototype.hasOwnProperty.call(node, 'specifiers')) {
+      return get(node, 'specifiers.0.exported.name');
+    }
+
+    return null;
   };
 
   findPropTypes = (declaration) => {

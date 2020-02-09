@@ -102,7 +102,6 @@ const propTypesToObject = ({ pt, pd }, b) => {
           ].value = `${prop.value.object.name}.${prop.value.property.name}`;
           break;
         case 'Identifier':
-          // const x = find(b, prop.key.name);
           if (typeof x === 'object' && x !== null) {
             switch (x.type) {
               case 'ImportDeclaration':
