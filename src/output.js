@@ -2,7 +2,7 @@ const path = require('path');
 const fse = require('fs-extra');
 const ejs = require('ejs');
 const { Redux } = require('./lib/Imports');
-const { sortRequiredFirst } = require('./sort');
+const { sortRequiredFirst } = require('./lib/sort');
 
 const write = (type, dir, file, name, content) => fse
   .outputFile(

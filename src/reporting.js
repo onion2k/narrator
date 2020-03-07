@@ -1,5 +1,5 @@
 require('colors');
-const { sortRequiredFirst } = require('./sort');
+const { sortRequiredFirst } = require('./lib/sort');
 
 const config = require('./narrator.config.json');
 
@@ -45,8 +45,12 @@ module.exports = {
         sortedPt.forEach((prop, index) => {
           const type = prop[1].type.string || '';
           let connector = '│';
-          if (index === 0) { connector = '┌'; }
-          if (index === propCount - 1) { connector = '└'; }
+          if (index === 0) {
+            connector = '┌';
+          }
+          if (index === propCount - 1) {
+            connector = '└';
+          }
           console.log(
             connector,
             prop[1].required
@@ -106,9 +110,7 @@ module.exports = {
          */
         console.log(
           'Call :',
-          `${callee.init.callee.object.name
-          }.${
-            callee.init.callee.property.name}`,
+          `${callee.init.callee.object.name}.${callee.init.callee.property.name}`,
         );
         break;
       case 'ArrowFunctionExpression':
