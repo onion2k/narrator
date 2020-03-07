@@ -7,6 +7,6 @@
   "babel": {
     "plugins": ["jsx", "dynamicImport", "classProperties", "exportDefaultFrom"]
   },
-  "reporting": false,
-  "writeFiles": false
+  "reporting": true,
+  "writeFiles": true
 }

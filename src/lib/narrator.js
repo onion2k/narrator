@@ -50,7 +50,7 @@ class Narrator {
   typeMap = {
     ExportNamedDeclaration: {
       AssignmentExpression: 'declaration.left.name',
-      VariableDeclaration: 'declaration.declarations.0.id.name',
+      VariableDeclaration: 'declaration.declarations.0.id.name', // index here is wrong
       FunctionDeclaration: 'declaration.id.name',
       ClassDeclaration: 'declaration.id.name',
       Identifier: {},

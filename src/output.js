@@ -10,7 +10,9 @@ const write = (type, dir, file, name, content) => fse
     content,
   )
   .then((error) => {
-    if (error) { console.log(error); }
+    if (error) {
+      console.log(error);
+    }
     console.log(
       `Wrote ./output/${dir}/${path.basename(file, '.js')}.${type}.js`,
     );
@@ -25,14 +27,16 @@ const propTypeDefs = {
 };
 
 const propsToTestProps = (pt) => {
-  const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
-  return sortedPt
-    .map(([key, value]) => (value.required
-      ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${
-        value.type.string
-      }`
-      : `    // ${key}: ${value.value || "''"}, //${value.type.string}`))
-    .join('\n');
+  if (pt) {
+    const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
+    return sortedPt
+      .map(([key, value]) => (value.required
+        ? `    ${key}: ${value.value
+              || propTypeDefs[value.type.chain[1]]}, //${value.type.string}`
+        : `    // ${key}: ${value.value || "''"}, //${value.type.string}`))
+      .join('\n');
+  }
+  return false;
 };
 
 const writeToTest = (reports) => {
