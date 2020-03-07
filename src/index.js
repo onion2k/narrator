@@ -26,20 +26,26 @@ try {
     const reports = [];
 
     files.forEach((file) => {
-      const n = new Narrator(file);
-      // n.mapNodes();
+      const narrator = new Narrator(file);
 
-      let exps = n.listExports();
+      narrator.mapNodes();
+
+      let exps = narrator.listExports();
 
       if (exps) {
         if (typeof exps === 'object' && !exps.length) {
+          // Treat single exports as an array
           exps = [exps];
         }
         exps.forEach((exp) => {
           if (exp.type === 'ExportDefaultDeclaration') {
             const expReport = {
-              ...buildReportObj(exp, n),
-              imports: n.checkImports(['react', 'react-redux', 'prop-types']),
+              ...buildReportObj(exp, narrator),
+              imports: narrator.checkImports([
+                'react',
+                'react-redux',
+                'prop-types',
+              ]),
               file,
             };
             reports.push(expReport);
@@ -63,8 +69,12 @@ try {
               // const dec = exp.declaration;
               // console.log('Declaration (no sub):', dec.type, dec.id.name);
               reports.push({
-                ...buildReportObj(exp, n),
-                imports: n.checkImports(['react', 'react-redux', 'prop-types']),
+                ...buildReportObj(exp, narrator),
+                imports: narrator.checkImports([
+                  'react',
+                  'react-redux',
+                  'prop-types',
+                ]),
                 file,
               });
             }

@@ -22,13 +22,22 @@ function traverse(node, indent = 0) {
 
     Object.entries(nodeCopy).forEach(([key, value]) => {
       const val = value !== null ? value.type || typeof value : 'null';
-      console.log(''.padStart(indent), key.yellow, val.green);
       if (key !== 'superClass') {
         switch (val) {
+          case 'ReturnStatement':
+            console.log(get(value, 'argument.type'));
+            break;
           default:
             traverse(value, indent + 1);
             break;
         }
+      } else {
+        if (value === null) return;
+        console.log(
+          get(value, 'object.name'),
+          '.',
+          get(value, 'property.name'),
+        );
       }
     });
   }
@@ -93,7 +102,7 @@ class Narrator {
       );
     }
     if (Object.prototype.hasOwnProperty.call(node, 'specifiers')) {
-      return get(node, 'specifiers.0.exported.name');
+      return get(node, 'specifiers.0.exported.name'); // index is wrong here, need to use a forEach
     }
 
     return null;
