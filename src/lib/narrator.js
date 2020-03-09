@@ -56,6 +56,9 @@ class Narrator {
     this.b = b;
   }
 
+  /**
+   * Mapping nodes in js react comps
+   */
   typeMap = {
     ExportNamedDeclaration: {
       AssignmentExpression: 'declaration.left.name',
@@ -107,6 +110,9 @@ class Narrator {
 
     return null;
   };
+  /**
+   * ends
+   */
 
   findPropTypes = (declaration) => {
     switch (declaration.type) {
