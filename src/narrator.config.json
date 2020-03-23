@@ -1,7 +1,7 @@
 {
   "src": "./tests/**/",
   "src_": "../structureflow/sf-web-ui/client/**/",
-  "files": "stateless*.js?(x)",
+  "files": "class*.js?(x)",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {

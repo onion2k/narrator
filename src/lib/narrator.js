@@ -21,23 +21,21 @@ function traverse(node, indent = 0) {
     delete nodeCopy.trailingComments;
 
     Object.entries(nodeCopy).forEach(([key, value]) => {
-      const val = value !== null ? value.type || typeof value : 'null';
-      if (key !== 'superClass') {
-        switch (val) {
-          case 'ReturnStatement':
-            console.log(get(value, 'argument.type'));
-            break;
-          default:
-            traverse(value, indent + 1);
-            break;
-        }
-      } else {
-        if (value === null) return;
-        console.log(
-          get(value, 'object.name'),
-          '.',
-          get(value, 'property.name'),
-        );
+      switch (key) {
+        case 'superClass':
+          if (value === null) return;
+          console.log(
+            `${get(value, 'object.name')}.${get(value, 'property.name')}`,
+          );
+          break;
+
+        case 'key':
+          console.log('Method', indent, get(value, 'name'));
+          break;
+
+        default:
+          traverse(value, indent + 1);
+          break;
       }
     });
   }
@@ -45,6 +43,8 @@ function traverse(node, indent = 0) {
 
 class Narrator {
   constructor(file) {
+    console.log('');
+    console.log('File:', file);
     const contents = fs.readFileSync(file, 'utf8');
 
     const b = babelParser.parse(contents, {
@@ -77,17 +77,6 @@ class Narrator {
   };
 
   mapNodes = () => {
-    delete this.b.start;
-    delete this.b.end;
-    delete this.b.loc;
-
-    delete this.b.program.start;
-    delete this.b.program.end;
-    delete this.b.program.loc;
-    delete this.b.program.interpreter;
-
-    delete this.b.comments;
-
     traverse(this.b);
 
     return {};

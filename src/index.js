@@ -1,5 +1,6 @@
 const glob = require('glob');
 require('colors');
+// const { get } = require('lodash');
 const { reporter } = require('./reporting');
 const { writeToTest } = require('./output');
 
@@ -28,7 +29,7 @@ try {
     files.forEach((file) => {
       const narrator = new Narrator(file);
 
-      narrator.mapNodes();
+      // narrator.mapNodes();
 
       let exps = narrator.listExports();
 
@@ -38,6 +39,9 @@ try {
           exps = [exps];
         }
         exps.forEach((exp) => {
+          // console.log(exp.declaration)
+          console.log('Export found:', narrator.identifyNode(exp));
+
           if (exp.type === 'ExportDefaultDeclaration') {
             const expReport = {
               ...buildReportObj(exp, narrator),
@@ -62,8 +66,8 @@ try {
                 'declarations',
               )
             ) {
-              exp.declaration.declarations.forEach(() => {
-                // console.log('Declaration (sub):', dec.type, dec.id.name);
+              exp.declaration.declarations.forEach((dec) => {
+                console.log('Declaration (sub):', dec.type, dec.id.name);
               });
             } else {
               // const dec = exp.declaration;
