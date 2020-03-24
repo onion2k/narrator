@@ -7,7 +7,7 @@ const {
 } = require('./AST');
 const { propTypesToObject } = require('./propTypesToObject');
 
-const buildReportObj = (node, narrator) => {
+const parseNodeData = (node, narrator) => {
   let pt = {};
   const parsedJs = narrator.b;
   const identifierName = narrator.identifyNode(node);
@@ -100,4 +100,4 @@ const buildReportObj = (node, narrator) => {
   return true;
 };
 
-module.exports = { buildReportObj };
+module.exports = { parseNodeData };

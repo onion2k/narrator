@@ -1,16 +1,17 @@
 
-// Things to look for
+Remove buildReportObj and replace with 'file information'
 
-exported variable
+Exports
+  Type (def etc)
+  Class / Function / Literal
+  Returns
+  LCF
+  Hooks
+  PropTypes
 
-exported function - figure out if the function is a helper or a component? what does it return?
+Recursively check indentifiers and specifiers
 
-exported class - is it a component? extends React? has a render method?
-
-exported default - recursively look up the tree to the default declaration
-
-warn about functions that aren't exported
-
-use act for hooks
-
-cli for nicer access
+Write templates
+  Tests
+  Stories
+  Test types

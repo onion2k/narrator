@@ -5,7 +5,7 @@ const { reporter } = require('./reporting');
 const { writeToTest } = require('./output');
 
 const config = require('./narrator.config.json');
-const { buildReportObj } = require('./lib/buildReportObj');
+const { parseNodeData } = require('./lib/parseNodeData');
 const { Narrator } = require('./lib/narrator');
 
 try {
@@ -35,30 +35,15 @@ try {
 
       if (exps) {
         if (typeof exps === 'object' && !exps.length) {
-          // Treat single exports as an array
           exps = [exps];
         }
         exps.forEach((exp) => {
-          // console.log(exp.declaration)
-          console.log('Export found:', narrator.identifyNode(exp));
-
-          if (exp.type === 'ExportDefaultDeclaration') {
-            const expReport = {
-              ...buildReportObj(exp, narrator),
-              imports: narrator.checkImports([
-                'react',
-                'react-redux',
-                'prop-types',
-              ]),
-              file,
-            };
-            reports.push(expReport);
-          } else if (
+          if (
             Object.prototype.hasOwnProperty.call(exp, 'declaration')
             && exp.declaration !== null
           ) {
             /**
-             * exported as an equality expression eg export const blah = thing
+             * Export has it's own declarations, which means it's a reference to something else
              */
             if (
               Object.prototype.hasOwnProperty.call(
@@ -67,18 +52,30 @@ try {
               )
             ) {
               exp.declaration.declarations.forEach((dec) => {
-                console.log('Declaration (sub):', dec.type, dec.id.name);
+                /**
+                 * Recursively look down the tree to find the parsable node
+                 */
+                console.log(
+                  'Sub declaration:',
+                  dec.type,
+                  dec.id.name,
+                  'will need to find the node...',
+                );
               });
             } else {
-              // const dec = exp.declaration;
-              // console.log('Declaration (no sub):', dec.type, dec.id.name);
+              /**
+               * Parse default and named export declarations
+               */
+              console.log('Declaration:', exp.type);
+
               reports.push({
-                ...buildReportObj(exp, narrator),
+                ...parseNodeData(exp, narrator),
                 imports: narrator.checkImports([
                   'react',
                   'react-redux',
                   'prop-types',
                 ]),
+                default: exp.type === 'ExportDefaultDeclaration',
                 file,
               });
             }
