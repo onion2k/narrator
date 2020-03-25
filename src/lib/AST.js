@@ -86,7 +86,15 @@ const declarationParamsToObject = (declaration) => {
   return {};
 };
 
-const findExpressionPropTypes = (b, identifierName) => {
+/**
+ * Find proptypes for an expression
+ * @param {json ast} ast
+ * @param {string} expression node id
+ */
+/**
+ * How can this be modded to take the node instead?
+ */
+const findExpressionPropTypes = (ast, identifierName) => {
   let pt = {};
   let pd = {};
 
@@ -96,8 +104,8 @@ const findExpressionPropTypes = (b, identifierName) => {
     return { pt, pd };
   }
 
-  if (findExpressionsByLeftIdentifierName.evaluate(b, { identifierName })) {
-    const expressions = findExpressionsByLeftIdentifierName.evaluate(b, {
+  if (findExpressionsByLeftIdentifierName.evaluate(ast, { identifierName })) {
+    const expressions = findExpressionsByLeftIdentifierName.evaluate(ast, {
       identifierName,
     });
     if (Symbol.iterator in Object(expressions)) {
@@ -120,7 +128,7 @@ const findExpressionPropTypes = (b, identifierName) => {
     }
   } else {
     // component defined as assignment and then exported separately
-    const v = findVariableByName.evaluate(b, { identifierName });
+    const v = findVariableByName.evaluate(ast, { identifierName });
     if (v) {
       v.declarations.forEach((variable) => {
         pt = declarationParamsToObject(variable.init);
@@ -130,9 +138,17 @@ const findExpressionPropTypes = (b, identifierName) => {
   return { pt: pt ? pt.properties : {}, pd: pd ? pd.properties : {} };
 };
 
-const findClassPropTypes = (x) => {
-  const pt = findClassProperty.evaluate(x, { classProperty: 'propTypes' });
-  const pd = findClassProperty.evaluate(x, { classProperty: 'defaultProps' });
+/**
+ * Find proptypes for a class
+ * @param {node} classNode - a React class node
+ */
+const findClassPropTypes = (classNode) => {
+  const pt = findClassProperty.evaluate(classNode, {
+    classProperty: 'propTypes',
+  });
+  const pd = findClassProperty.evaluate(classNode, {
+    classProperty: 'defaultProps',
+  });
   return { pt, pd };
 };
 

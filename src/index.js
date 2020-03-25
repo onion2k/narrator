@@ -29,6 +29,12 @@ try {
     files.forEach((file) => {
       const narrator = new Narrator(file);
 
+      const fileData = {
+        file,
+        imports: narrator.checkImports(['react', 'react-redux', 'prop-types']),
+        exports: [],
+      };
+
       // narrator.mapNodes();
 
       let exps = narrator.listExports();
@@ -66,18 +72,12 @@ try {
               /**
                * Parse default and named export declarations
                */
-              console.log('Declaration:', exp.type);
-
-              reports.push({
+              const report = {
                 ...parseNodeData(exp, narrator),
-                imports: narrator.checkImports([
-                  'react',
-                  'react-redux',
-                  'prop-types',
-                ]),
                 default: exp.type === 'ExportDefaultDeclaration',
                 file,
-              });
+              };
+              fileData.exports.push(report);
             }
           } else {
             // exp.specifiers.forEach((spec) => {
@@ -91,6 +91,7 @@ try {
           }
         });
       }
+      reports.push(fileData);
     });
 
     if (config.reporting === true) {

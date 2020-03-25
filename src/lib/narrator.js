@@ -43,8 +43,6 @@ function traverse(node, indent = 0) {
 
 class Narrator {
   constructor(file) {
-    console.log('');
-    console.log('File:', file);
     const contents = fs.readFileSync(file, 'utf8');
 
     const b = babelParser.parse(contents, {

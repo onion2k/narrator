@@ -11,4 +11,5 @@ module.exports = {
   ExportSpecifiers: jsonata("program.body[type='ExportNamedDeclaration']"),
   IdentifierName: jsonata('declaration.name'),
   CalleeName: jsonata('declaration.callee.callee.name'),
+  SuperClass: jsonata('declaration.superClass'),
 };

@@ -1,4 +1,4 @@
-const { CalleeName } = require('./Extractors');
+const { SuperClass, CalleeName } = require('./Extractors');
 const {
   find,
   findExpressionPropTypes,
@@ -13,6 +13,7 @@ const parseNodeData = (node, narrator) => {
   const identifierName = narrator.identifyNode(node);
 
   if (node) {
+    const superClass = SuperClass.evaluate(node);
     switch (node.declaration.type) {
       case 'ClassDeclaration':
         pt = propTypesToObject(
@@ -27,7 +28,12 @@ const parseNodeData = (node, narrator) => {
             );
           }
         }
-        return { name: '', pt };
+        return {
+          name: identifierName,
+          type: 'Class',
+          super: `${superClass.object.name}.${superClass.property.name}`,
+          pt,
+        };
 
       case 'VariableDeclaration':
         narrator.findPropTypes(node.declaration);
@@ -36,7 +42,7 @@ const parseNodeData = (node, narrator) => {
             findExpressionPropTypes(parsedJs, identifierName),
           );
         }
-        return { name: '', pt };
+        return { name: identifierName, type: 'Variable', pt };
 
       case 'Identifier':
         /**
@@ -66,7 +72,7 @@ const parseNodeData = (node, narrator) => {
         } catch (error) {
           console.log(error);
         }
-        return { name: identifierName, pt };
+        return { name: identifierName, type: 'Identifier', pt };
 
       case 'CallExpression':
         if (CalleeName.evaluate(node) === 'connect') {
@@ -80,16 +86,16 @@ const parseNodeData = (node, narrator) => {
               );
             }
           }
-          return { name: identifierName, pt };
+          return { name: identifierName, type: 'Call', pt };
         }
         break;
 
       case 'FunctionDeclaration':
         pt = declarationParamsToObject(node.declaration);
-        return { name: identifierName, pt };
+        return { name: identifierName, type: 'Function', pt };
 
       case 'Assignment':
-        console.log('Assignment');
+        console.log('parseNodeData: Found Assignment');
         break;
 
       default:

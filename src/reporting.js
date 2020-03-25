@@ -18,55 +18,67 @@ function clipper(str, percent) {
 module.exports = {
   reporter: (reports) => {
     reports.forEach((report) => {
-      const {
-        name, file, imports, pt,
-      } = report;
+      const { file, imports } = report;
 
-      const srcfile = `./<src>/${file.replace(config.src, '')}`;
-
-      const proptypes = pt || {};
-
-      console.log('File: ', srcfile.brightWhite);
+      const srcfile = `  File: ./<src>/${file.replace(config.src, '')}`;
+      console.log();
       console.log(
-        clipper(`Component: ${name}`, 50).brightYellow,
-        imports.react ? clipper('Rct', 4).green : clipper('Rct', 4).red,
+        clipper(srcfile.brightWhite, 72),
+        imports.react ? clipper('React', 6).green : clipper('React', 6).red,
         imports['react-redux']
-          ? clipper('Rdx', 4).green
-          : clipper('Rdx', 4).red,
-        imports['prop-types'] ? clipper('PTs', 4).green : clipper('PTs', 4).red,
-        Object.keys(proptypes).length
-          ? clipper(`Props: ${Object.keys(proptypes).length}`, 10).green
-          : clipper('No Props', 10).red,
+          ? clipper('Redux', 6).green
+          : clipper('Redux', 6).red,
+        imports['prop-types']
+          ? clipper('Props', 6).green
+          : clipper('Props', 6).red,
       );
 
-      if (Object.keys(proptypes).length) {
-        const propCount = Object.keys(pt).length;
-        const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
-        sortedPt.forEach((prop, index) => {
-          const type = prop[1].type.string || '';
-          let connector = '│';
-          if (index === 0) {
-            connector = '┌';
-          }
-          if (index === propCount - 1) {
-            connector = '└';
-          }
-          console.log(
-            connector,
-            prop[1].required
-              ? clipper(prop[0], 16).brightGreen
-              : clipper(prop[0], 16).green,
-            prop[1].required
-              ? clipper(type, 30).brightWhite
-              : clipper(type, 30).white,
-            typeof prop[1].value === 'object'
-              ? clipper('Object', 50)
-              : clipper(prop[1].value, 50),
-          );
-        });
-      } else {
-        console.log('No proptypes found');
-      }
+      report.exports.forEach((exp) => {
+        const {
+          name, type, pt, super: superClass,
+        } = exp;
+
+        console.log(
+          '  Export: ',
+          name.brightGreen,
+          type.brightYellow,
+          type === 'Class' && superClass
+            ? `extends ${superClass.brightYellow}`
+            : '',
+        );
+        console.log('  PropTypes: ');
+
+        const proptypes = pt || {};
+
+        if (Object.keys(proptypes).length) {
+          const propCount = Object.keys(pt).length;
+          const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
+          sortedPt.forEach((prop, index) => {
+            const proptype = prop[1].type.string || '';
+            let connector = '│';
+            if (index === 0) {
+              connector = '┌';
+            }
+            if (index === propCount - 1) {
+              connector = '└';
+            }
+            console.log(
+              connector,
+              prop[1].required
+                ? clipper(prop[0], 16).brightGreen
+                : clipper(prop[0], 16).green,
+              prop[1].required
+                ? clipper(proptype, 30).brightWhite
+                : clipper(proptype, 30).white,
+              typeof prop[1].value === 'object'
+                ? clipper('Object', 50)
+                : clipper(prop[1].value, 50),
+            );
+          });
+        } else {
+          console.log('    No proptypes found');
+        }
+      });
     });
   },
   def: (type, x) => {
