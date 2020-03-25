@@ -8,6 +8,8 @@ const config = require('./narrator.config.json');
 const { parseNodeData } = require('./lib/parseNodeData');
 const { Narrator } = require('./lib/narrator');
 
+const { ClassMethod, ClassMethodReturnStatement } = require('./lib/Extractors');
+
 try {
   /**
    * Clear screen
@@ -44,6 +46,26 @@ try {
           exps = [exps];
         }
         exps.forEach((exp) => {
+          /**
+           * Find the class methods if there are any, and find out what they return
+           */
+          /**
+           * This is missing a ton of stuff...
+           */
+          let classMethods = ClassMethod.evaluate(exp);
+          if (classMethods) {
+            if (typeof classMethods[Symbol.iterator] !== 'function') {
+              classMethods = [classMethods];
+            }
+            classMethods.forEach((method) => {
+              const returns = ClassMethodReturnStatement.evaluate(method);
+              console.log(
+                method.key ? method.key.name : method.key,
+                returns[0] ? returns[0].argument.type : '-',
+              );
+            });
+          }
+
           if (
             Object.prototype.hasOwnProperty.call(exp, 'declaration')
             && exp.declaration !== null
@@ -57,16 +79,17 @@ try {
                 'declarations',
               )
             ) {
-              exp.declaration.declarations.forEach((dec) => {
+              exp.declaration.declarations.forEach(() => {
+                // dec
                 /**
                  * Recursively look down the tree to find the parsable node
                  */
-                console.log(
-                  'Sub declaration:',
-                  dec.type,
-                  dec.id.name,
-                  'will need to find the node...',
-                );
+                // console.log(
+                //   'Sub declaration:',
+                //   dec.type,
+                //   dec.id.name,
+                //   'will need to find the node...',
+                // );
               });
             } else {
               /**

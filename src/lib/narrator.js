@@ -28,12 +28,18 @@ function traverse(node, indent = 0) {
             `${get(value, 'object.name')}.${get(value, 'property.name')}`,
           );
           break;
-
         case 'key':
-          console.log('Method', indent, get(value, 'name'));
+          console.log('Method', indent, get(value, 'type'), get(value, 'name'));
           break;
-
         default:
+          if (get(value, 'type') === 'ReturnStatement') {
+            console.log(
+              '---',
+              indent,
+              get(value, 'type'),
+              get(value, 'argument.type'),
+            );
+          }
           traverse(value, indent + 1);
           break;
       }
@@ -76,7 +82,6 @@ class Narrator {
 
   mapNodes = () => {
     traverse(this.b);
-
     return {};
   };
 

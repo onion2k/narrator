@@ -1,6 +1,6 @@
 import React from "react";
 
-class Example extends React.Component {
+export default class Example extends React.Component {
   shouldComponentUpdate(nextProps) {
     return true;
   }
@@ -9,5 +9,3 @@ class Example extends React.Component {
     return <div>{this.props.content}</div>;
   }
 }
-
-export default Example;

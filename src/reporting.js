@@ -38,6 +38,9 @@ module.exports = {
           name, type, pt, super: superClass,
         } = exp;
 
+        /**
+         * Export header - name, type, super etc
+         */
         console.log(
           '  Export: ',
           name.brightGreen,
@@ -46,10 +49,17 @@ module.exports = {
             ? `extends ${superClass.brightYellow}`
             : '',
         );
+
+        /**
+         * If this is a function (eg functional component) we want to know what it returns
+         */
+        console.log('  Returns: ');
+
+        /**
+         * Components should have proptypes
+         */
         console.log('  PropTypes: ');
-
         const proptypes = pt || {};
-
         if (Object.keys(proptypes).length) {
           const propCount = Object.keys(pt).length;
           const sortedPt = Object.entries(pt).sort(sortRequiredFirst);

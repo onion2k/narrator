@@ -31,7 +31,10 @@ const parseNodeData = (node, narrator) => {
         return {
           name: identifierName,
           type: 'Class',
-          super: `${superClass.object.name}.${superClass.property.name}`,
+          super:
+            superClass && superClass.object !== undefined
+              ? `${superClass.object.name}.${superClass.property.name}`
+              : 'null',
           pt,
         };
 
