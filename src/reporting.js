@@ -35,7 +35,7 @@ module.exports = {
 
       report.exports.forEach((exp) => {
         const {
-          name, type, pt, super: superClass,
+          name, type, pt, super: superClass, methods, properties,
         } = exp;
 
         /**
@@ -43,12 +43,28 @@ module.exports = {
          */
         console.log(
           '  Export: ',
-          name.brightGreen,
-          type.brightYellow,
+          name ? name.brightGreen : 'anonymous'.brightGreen,
+          type ? type.brightYellow : '',
           type === 'Class' && superClass
             ? `extends ${superClass.brightYellow}`
             : '',
         );
+
+        /**
+         * Class related values
+         */
+        if (type === 'Class') {
+          console.log(
+            '  Methods: ',
+            methods.length
+              ? clipper(methods.length.toString(), 15)
+              : clipper('N/A', 15),
+            '  Properties: ',
+            properties.length
+              ? clipper(properties.length.toString(), 15)
+              : clipper('N/A', 15),
+          );
+        }
 
         /**
          * If this is a function (eg functional component) we want to know what it returns

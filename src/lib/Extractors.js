@@ -12,6 +12,8 @@ module.exports = {
   IdentifierName: jsonata('declaration.name'),
   CalleeName: jsonata('declaration.callee.callee.name'),
   SuperClass: jsonata('declaration.superClass'),
-  ClassMethod: jsonata("declaration.body.body[**[type='ClassMethod']]"),
+  ClassMethod: jsonata(
+    "declaration.body.body[**[type='ClassMethod' or type='ClassProperty']]",
+  ),
   ClassMethodReturnStatement: jsonata("body.[*[type='ReturnStatement']]"),
 };

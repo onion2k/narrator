@@ -5,10 +5,8 @@ const { reporter } = require('./reporting');
 const { writeToTest } = require('./output');
 
 const config = require('./narrator.config.json');
-const { parseNodeData } = require('./lib/parseNodeData');
+const { parseNodeData, parseClassData } = require('./lib/parseNodeData');
 const { Narrator } = require('./lib/narrator');
-
-const { ClassMethod, ClassMethodReturnStatement } = require('./lib/Extractors');
 
 try {
   /**
@@ -31,6 +29,9 @@ try {
     files.forEach((file) => {
       const narrator = new Narrator(file);
 
+      console.log();
+      console.log(file);
+
       const fileData = {
         file,
         imports: narrator.checkImports(['react', 'react-redux', 'prop-types']),
@@ -46,26 +47,6 @@ try {
           exps = [exps];
         }
         exps.forEach((exp) => {
-          /**
-           * Find the class methods if there are any, and find out what they return
-           */
-          /**
-           * This is missing a ton of stuff...
-           */
-          let classMethods = ClassMethod.evaluate(exp);
-          if (classMethods) {
-            if (typeof classMethods[Symbol.iterator] !== 'function') {
-              classMethods = [classMethods];
-            }
-            classMethods.forEach((method) => {
-              const returns = ClassMethodReturnStatement.evaluate(method);
-              console.log(
-                method.key ? method.key.name : method.key,
-                returns[0] ? returns[0].argument.type : '-',
-              );
-            });
-          }
-
           if (
             Object.prototype.hasOwnProperty.call(exp, 'declaration')
             && exp.declaration !== null
@@ -97,6 +78,7 @@ try {
                */
               const report = {
                 ...parseNodeData(exp, narrator),
+                ...parseClassData(exp),
                 default: exp.type === 'ExportDefaultDeclaration',
                 file,
               };

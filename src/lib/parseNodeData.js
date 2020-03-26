@@ -1,4 +1,10 @@
-const { SuperClass, CalleeName } = require('./Extractors');
+const {
+  SuperClass,
+  CalleeName,
+  ClassMethod,
+  ClassMethodReturnStatement,
+} = require('./Extractors');
+
 const {
   find,
   findExpressionPropTypes,
@@ -109,4 +115,32 @@ const parseNodeData = (node, narrator) => {
   return true;
 };
 
-module.exports = { parseNodeData };
+const parseClassData = (exp) => {
+  /**
+   * Find the class methods if there are any, and find out what they return
+   */
+  const properties = [];
+  const methods = [];
+
+  let classMethods = ClassMethod.evaluate(exp);
+  if (classMethods) {
+    if (typeof classMethods[Symbol.iterator] !== 'function') {
+      classMethods = [classMethods];
+    }
+    classMethods.forEach((method) => {
+      const returns = ClassMethodReturnStatement.evaluate(method);
+      if (returns) {
+        methods.push({
+          method: method.key ? method.key.name : method.key,
+          returns: returns[0] ? returns[0].argument.type : '',
+        });
+      } else {
+        properties.push(method.key.name);
+      }
+    });
+  }
+
+  return { properties, methods };
+};
+
+module.exports = { parseNodeData, parseClassData };
