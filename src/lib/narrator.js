@@ -5,7 +5,11 @@ const config = require('../narrator.config.json');
 const { Exports } = require('./Extractors');
 const { Imports, ImportLibTest } = require('./Imports');
 // const { buildReportObj } = require('./buildReportObj');
-const { findClassPropTypes } = require('./AST');
+const {
+  findClassPropTypes,
+  findFunctionByName,
+  findClassByName,
+} = require('./AST');
 
 function traverse(node, indent = 0) {
   if (node !== null && typeof node === 'object') {
@@ -51,6 +55,8 @@ class Narrator {
   constructor(file) {
     const contents = fs.readFileSync(file, 'utf8');
 
+    console.log('.');
+
     const b = babelParser.parse(contents, {
       sourceType: 'module',
       plugins: config.babel.plugins,
@@ -75,7 +81,7 @@ class Narrator {
       AssignmentExpression: 'declaration.left.name',
       FunctionDeclaration: 'declaration.id.name',
       ClassDeclaration: 'declaration.id.name',
-      CallExpression: 'declaration.arguments.0.name',
+      CallExpression: 'declaration.arguments.0.name', // index here is wrong
       Identifier: 'declaration.name',
     },
   };
@@ -86,6 +92,7 @@ class Narrator {
   };
 
   identifyNode = (node) => {
+    // This assumes the node is a callExpression rather than an identifier
     if (
       Object.prototype.hasOwnProperty.call(node, 'declaration')
       && node.declaration !== null
@@ -96,6 +103,7 @@ class Narrator {
         'anon',
       );
     }
+
     if (Object.prototype.hasOwnProperty.call(node, 'specifiers')) {
       return get(node, 'specifiers.0.exported.name'); // index is wrong here, need to use a forEach
     }
@@ -134,10 +142,10 @@ class Narrator {
     imports.map((i) => [i, !!ImportLibTest(i).evaluate(this.b)]),
   );
 
-  resolveIdentifier = () => {
-    /**
-     * Take an identifier and return the node it identifies
-     */
+  resolveIdentifier = (identifierName) => {
+    const f = findFunctionByName.evaluate(this.b, { identifierName });
+    const c = findClassByName.evaluate(this.b, { identifierName });
+    return f || c || null;
   };
 }
 

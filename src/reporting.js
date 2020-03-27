@@ -35,7 +35,13 @@ module.exports = {
 
       report.exports.forEach((exp) => {
         const {
-          name, type, pt, super: superClass, methods, properties,
+          name,
+          type,
+          pt,
+          super: superClass,
+          methods,
+          properties,
+          default: def,
         } = exp;
 
         /**
@@ -43,6 +49,7 @@ module.exports = {
          */
         console.log(
           '  Export: ',
+          def ? 'Default'.brightBlue : '',
           name ? name.brightGreen : 'anonymous'.brightGreen,
           type ? type.brightYellow : '',
           type === 'Class' && superClass

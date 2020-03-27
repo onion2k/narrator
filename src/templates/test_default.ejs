@@ -2,20 +2,23 @@
 import React from 'react'
 import { render, cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'
-
-import <%= as; %> from '<%= file; %>'
-
+<% exports.forEach(function(exp){ %>
+import <%= exp.name; %> from '<%= file; %>'
+<% }); %>
 afterEach(cleanup)
-
-test('<%= as; %> renders correctly', async () => {
+<% exports.forEach(function(exp){ %>
+test('<%= exp.name; %> renders correctly', async () => {
   const props = {
-<%- props; %>
+    <%- include('propTypes', { props: exp.pt }) %>
   }
 
-  const { container } = render(
-      <svg>
-        <<%= component %> {...props} />
-      </svg>,
+  const { getByText } = render(
+    <svg>
+      <<%= exp.name %> {...props} />
+    </svg>
   )
-  expect(container).toBeVisible()
-})
+
+  expect(getByText('Test Title')).toBeVisible()
+
+}
+<% }); %>

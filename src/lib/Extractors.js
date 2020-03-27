@@ -9,11 +9,11 @@ module.exports = {
   ),
   ExportDefault: jsonata("program.body[type='ExportDefaultDeclaration']"),
   ExportSpecifiers: jsonata("program.body[type='ExportNamedDeclaration']"),
-  IdentifierName: jsonata('declaration.name'),
-  CalleeName: jsonata('declaration.callee.callee.name'),
-  SuperClass: jsonata('declaration.superClass'),
+  IdentifierName: jsonata('name'),
+  CalleeName: jsonata('callee.callee.name'),
+  SuperClass: jsonata('superClass'),
   ClassMethod: jsonata(
-    "declaration.body.body[**[type='ClassMethod' or type='ClassProperty']]",
+    "body.body[**[type='ClassMethod' or type='ClassProperty']]",
   ),
   ClassMethodReturnStatement: jsonata("body.[*[type='ReturnStatement']]"),
 };

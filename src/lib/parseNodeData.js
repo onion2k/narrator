@@ -13,19 +13,15 @@ const {
 } = require('./AST');
 const { propTypesToObject } = require('./propTypesToObject');
 
-const parseNodeData = (node, narrator) => {
+const parseNodeData = (node, narrator, identifierName) => {
   let pt = {};
   const parsedJs = narrator.b;
-  const identifierName = narrator.identifyNode(node);
 
   if (node) {
     const superClass = SuperClass.evaluate(node);
-    switch (node.declaration.type) {
+    switch (node.type) {
       case 'ClassDeclaration':
-        pt = propTypesToObject(
-          narrator.findPropTypes(node.declaration),
-          parsedJs,
-        );
+        pt = propTypesToObject(narrator.findPropTypes(node), parsedJs);
         if (!Object.keys(pt).length) {
           if (identifierName) {
             pt = propTypesToObject(
@@ -45,7 +41,7 @@ const parseNodeData = (node, narrator) => {
         };
 
       case 'VariableDeclaration':
-        narrator.findPropTypes(node.declaration);
+        narrator.findPropTypes(node);
         if (identifierName) {
           pt = propTypesToObject(
             findExpressionPropTypes(parsedJs, identifierName),
@@ -100,7 +96,7 @@ const parseNodeData = (node, narrator) => {
         break;
 
       case 'FunctionDeclaration':
-        pt = declarationParamsToObject(node.declaration);
+        pt = declarationParamsToObject(node);
         return { name: identifierName, type: 'Function', pt };
 
       case 'Assignment':

@@ -157,6 +157,7 @@ module.exports = {
   findExpressionPropTypes,
   findClassPropTypes,
   findClassByName,
+  findFunctionByName,
   findVariableByName,
   declarationParamsToObject,
 };

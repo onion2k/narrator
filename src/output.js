@@ -1,10 +1,9 @@
 const path = require('path');
 const fse = require('fs-extra');
 const ejs = require('ejs');
-const { Redux } = require('./lib/Imports');
 const { sortRequiredFirst } = require('./lib/sort');
 
-const write = (type, dir, file, name, content) => fse
+const write = (type, dir, file, content) => fse
   .outputFile(
     `./output/${dir}/${path.basename(file, '.js')}.${type}.js`,
     content,
@@ -29,33 +28,37 @@ const propTypeDefs = {
 const propsToTestProps = (pt) => {
   if (pt) {
     const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
-    return sortedPt
-      .map(([key, value]) => (value.required
-        ? `    ${key}: ${value.value
-              || propTypeDefs[value.type.chain[1]]}, //${value.type.string}`
-        : `    // ${key}: ${value.value || "''"}, //${value.type.string}`))
-      .join('\n');
+    console.log(sortedPt);
+    if (sortedPt.length === 0) {
+      return [];
+    }
+    return sortedPt.map(([key, value]) => (value.required
+      ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${
+        value.type.string
+      }`
+      : `    // ${key}: ${value.value || "''"}, //${value.type.string}`));
   }
   return false;
 };
 
 const writeToTest = (reports) => {
   reports.forEach((report) => {
-    const {
-      name, file, b, pt,
-    } = report;
+    const { file, imports, exports } = report;
 
-    const template = Redux(b)
+    const template = imports.redux
       ? './src/templates/test_redux.ejs'
       : './src/templates/test_default.ejs';
+
+    console.log('pt:', propsToTestProps(exports));
 
     ejs.renderFile(
       template,
       {
         file,
-        component: name,
-        as: name,
-        props: propsToTestProps(pt),
+        exports: propsToTestProps(exports),
+        // component: name,
+        // as: name,
+        // props: propsToTestProps(pt),
       },
       {
         debug: false,
@@ -64,7 +67,7 @@ const writeToTest = (reports) => {
         if (error) {
           console.log(error);
         }
-        write('test', 'tests', file, name, result);
+        write('test', 'tests', file, result);
       },
     );
   });
