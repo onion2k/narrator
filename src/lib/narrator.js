@@ -55,8 +55,6 @@ class Narrator {
   constructor(file) {
     const contents = fs.readFileSync(file, 'utf8');
 
-    console.log('.');
-
     const b = babelParser.parse(contents, {
       sourceType: 'module',
       plugins: config.babel.plugins,

@@ -1,12 +1,12 @@
 {
   "src": "./tests/**/",
   "src_": "../structureflow/sf-web-ui/client/**/",
-  "files": "class_s*.js?(x)",
+  "files": "class*.js?(x)",
   "storyDir": "./stories",
   "testDir": "./tests",
   "babel": {
     "plugins": ["jsx", "dynamicImport", "classProperties", "exportDefaultFrom"]
   },
-  "reporting": true,
-  "writeFiles": true
+  "reporting": false,
+  "writeFiles": false
 }

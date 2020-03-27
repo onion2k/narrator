@@ -111,6 +111,9 @@ try {
               Object.prototype.hasOwnProperty.call(exp.declaration, 'callee')
               && exp.declaration.callee !== null
             ) {
+              /**
+               * If the callee has arguments for now we can assume it's connect().
+               */
               if (exp.declaration.arguments.length > 0) {
                 const resolved = narrator.resolveIdentifier(
                   exp.declaration.arguments[0].name,
@@ -129,7 +132,6 @@ try {
                * Parse default and named export declarations
                */
               const identifierName = narrator.identifyNode(exp);
-
               const report = {
                 ...parseNodeData(exp.declaration, narrator, identifierName),
                 ...parseClassData(exp),
