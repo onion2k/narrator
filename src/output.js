@@ -28,15 +28,14 @@ const propTypeDefs = {
 const propsToTestProps = (pt) => {
   if (pt) {
     const sortedPt = Object.entries(pt).sort(sortRequiredFirst);
-    console.log(sortedPt);
     if (sortedPt.length === 0) {
       return [];
     }
     return sortedPt.map(([key, value]) => (value.required
-      ? `    ${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, //${
+      ? `${key}: ${value.value || propTypeDefs[value.type.chain[1]]}, // ${
         value.type.string
       }`
-      : `    // ${key}: ${value.value || "''"}, //${value.type.string}`));
+      : `// ${key}: ${value.value || "''"}, // ${value.type.string}`));
   }
   return false;
 };
@@ -45,20 +44,19 @@ const writeToTest = (reports) => {
   reports.forEach((report) => {
     const { file, imports, exports } = report;
 
+    exports.forEach((exp, index) => {
+      exports[index] = { ...exp, pttp: propsToTestProps(exp.pt) };
+    });
+
     const template = imports.redux
       ? './src/templates/test_redux.ejs'
       : './src/templates/test_default.ejs';
-
-    console.log('pt:', propsToTestProps(exports));
 
     ejs.renderFile(
       template,
       {
         file,
-        exports: propsToTestProps(exports),
-        // component: name,
-        // as: name,
-        // props: propsToTestProps(pt),
+        exports,
       },
       {
         debug: false,

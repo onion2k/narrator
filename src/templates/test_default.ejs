@@ -8,9 +8,7 @@ import <%= exp.name; %> from '<%= file; %>'
 afterEach(cleanup)
 <% exports.forEach(function(exp){ %>
 test('<%= exp.name; %> renders correctly', async () => {
-  const props = {
-    <%- include('propTypes', { props: exp.pt }) %>
-  }
+  const props = {<%- include('propTypes', { props: exp.pttp }) %>}
 
   const { getByText } = render(
     <svg>
@@ -19,6 +17,4 @@ test('<%= exp.name; %> renders correctly', async () => {
   )
 
   expect(getByText('Test Title')).toBeVisible()
-
-}
-<% }); %>
+}<% }); %>

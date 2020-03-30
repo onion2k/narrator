@@ -21,8 +21,6 @@ const parseNodeData = (node, narrator, identifierName) => {
     const superClass = SuperClass.evaluate(node);
     switch (node.type) {
       case 'ClassDeclaration':
-        console.log('Class dec fpt:', narrator.findPropTypes(node));
-
         pt = propTypesToObject(narrator.findPropTypes(node), parsedJs);
         if (!Object.keys(pt).length) {
           if (identifierName) {
@@ -41,7 +39,6 @@ const parseNodeData = (node, narrator, identifierName) => {
               : 'null',
           pt,
         };
-
       case 'VariableDeclaration':
         narrator.findPropTypes(node);
         if (identifierName) {
